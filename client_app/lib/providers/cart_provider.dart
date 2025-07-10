@@ -55,6 +55,7 @@ class CartProvider extends ChangeNotifier {
   List<CartItem> get items => _items;
   bool get isLoading => _isLoading;
   int get itemCount => _items.length;
+  int get totalQuantity => _items.fold(0, (sum, item) => sum + item.quantity);
   double get totalAmount =>
       _items.fold(0, (sum, item) => sum + item.totalPrice);
 
@@ -126,9 +127,33 @@ class CartProvider extends ChangeNotifier {
     final index = _items.indexWhere((item) => item.productId == productId);
     if (index >= 0) {
       if (quantity <= 0) {
+        // Remove item if quantity is 0 or less
         _items.removeAt(index);
       } else {
         _items[index].quantity = quantity;
+      }
+      _saveCart();
+      notifyListeners();
+    }
+  }
+
+  void incrementQuantity(int productId) {
+    final index = _items.indexWhere((item) => item.productId == productId);
+    if (index >= 0) {
+      _items[index].quantity += 1;
+      _saveCart();
+      notifyListeners();
+    }
+  }
+
+  void decrementQuantity(int productId) {
+    final index = _items.indexWhere((item) => item.productId == productId);
+    if (index >= 0) {
+      if (_items[index].quantity <= 1) {
+        // Remove item if quantity would become 0
+        _items.removeAt(index);
+      } else {
+        _items[index].quantity -= 1;
       }
       _saveCart();
       notifyListeners();
@@ -157,6 +182,12 @@ class CartProvider extends ChangeNotifier {
 
   bool isInCart(int productId) {
     return _items.any((item) => item.productId == productId);
+  }
+
+  bool canIncrementQuantity(int productId, int maxStock) {
+    final item = getItem(productId);
+    if (item == null) return false;
+    return item.quantity < maxStock;
   }
 
   void _setLoading(bool loading) {

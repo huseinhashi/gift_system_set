@@ -77,8 +77,17 @@ export const createDelivery = async (req, res, next) => {
     if (existingDelivery) {
       return res.status(400).json({
         success: false,
-        message: "Delivery already exists for this order",
+        message:
+          "Delivery already exists for this order. Only one delivery record is allowed per order.",
       });
+    }
+
+    // Check if employee exists
+    const employee = await Employee.findByPk(req.body.assigned_to);
+    if (!employee) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Employee not found" });
     }
 
     const delivery = await Delivery.create(req.body);

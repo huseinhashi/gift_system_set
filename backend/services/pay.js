@@ -8,7 +8,7 @@ import {
 
 export const Pay = async (phone, amount, paymentId, type) => {
   try {
-    const referenceId = `CW-${paymentId}-${Date.now()}`;
+    const referenceId = `FG-${paymentId}-${Date.now()}`;
 
     // For testing purposes - if type is 'test', return success immediately
     if (type === "test") {
@@ -20,6 +20,12 @@ export const Pay = async (phone, amount, paymentId, type) => {
           responseMsg: "Test payment successful",
         },
       };
+    }
+
+    // Ensure amount is a number
+    const numericAmount = Number(amount);
+    if (isNaN(numericAmount)) {
+      throw new Error("Invalid amount provided");
     }
 
     const paymentBody = {
@@ -39,7 +45,7 @@ export const Pay = async (phone, amount, paymentId, type) => {
         transactionInfo: {
           referenceId: referenceId,
           invoiceId: paymentId,
-          amount: amount.toFixed(2),
+          amount: numericAmount.toFixed(2),
           currency: "USD",
           description: "Gifts Payment",
         },

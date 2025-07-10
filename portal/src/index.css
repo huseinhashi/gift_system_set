@@ -1,87 +1,302 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light mode - Modern neutral palette with vibrant accents */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221 83% 53%;
-    /* Vibrant blue */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 262 83% 58%;
-    /* Purple */
-    --secondary-foreground: 210 40% 98%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 187 65% 45%;
-    /* Teal replacing Green */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
-    --chart-1: 221 83% 53%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* Primary - Emerald to Blue gradient */
+    --primary: 158 64% 52%;
+    /* Emerald-500 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Blue accent */
+    --secondary: 217 91% 60%;
+    /* Blue-500 */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted - Soft grays */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    /* Accent - Purple for highlights */
+    --accent: 262 83% 58%;
+    /* Purple-500 */
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive - Modern red */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Warning - Amber */
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Success - Emerald */
+    --success: 158 64% 52%;
+    --success-foreground: 0 0% 100%;
+
+    /* Border and inputs */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 158 64% 52%;
+
+    /* Chart colors - Modern vibrant palette */
+    --chart-1: 158 64% 52%;
+    /* Emerald */
+    --chart-2: 217 91% 60%;
     /* Blue */
-    --chart-2: 187 65% 45%;
-    /* Teal replacing Green */
-    --chart-3: 280 83% 58%;
+    --chart-3: 262 83% 58%;
     /* Purple */
-    --chart-4: 32 94% 56%;
+    --chart-4: 25 95% 53%;
     /* Orange */
-    --chart-5: 0 91% 63%;
-    /* Red */
-    --radius: 0.5rem;
+    --chart-5: 348 83% 47%;
+    /* Rose */
+
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 18% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 16% 15%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 16% 15%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    /* Bright blue for dark mode */
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 266 100% 64%;
-    /* Bright purple */
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 187 85% 53%;
-    /* Bright teal replacing green */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84% 65%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224 76% 48%;
-    --chart-1: 217 91% 60%;
-    /* Bright blue */
-    --chart-2: 187 85% 53%;
-    /* Bright teal replacing green */
-    --chart-3: 266 100% 64%;
-    /* Bright purple */
-    --chart-4: 32 100% 60%;
-    /* Bright orange */
-    --chart-5: 355 100% 68%;
-    /* Bright red */
+    /* Dark mode - Rich dark palette with vibrant accents */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Primary - Brighter emerald for dark mode */
+    --primary: 158 64% 52%;
+    --primary-foreground: 240 10% 3.9%;
+
+    /* Secondary - Bright blue */
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 240 10% 3.9%;
+
+    /* Muted - Dark grays */
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    /* Accent - Bright purple */
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 98%;
+
+    /* Destructive - Bright red for dark mode */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Warning - Bright amber */
+    --warning: 43 96% 56%;
+    --warning-foreground: 240 10% 3.9%;
+
+    /* Success - Bright emerald */
+    --success: 158 64% 52%;
+    --success-foreground: 240 10% 3.9%;
+
+    /* Border and inputs */
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 158 64% 52%;
+
+    /* Chart colors - Bright versions for dark mode */
+    --chart-1: 158 64% 52%;
+    /* Emerald */
+    --chart-2: 217 91% 60%;
+    /* Blue */
+    --chart-3: 262 83% 58%;
+    /* Purple */
+    --chart-4: 25 95% 53%;
+    /* Orange */
+    --chart-5: 348 83% 47%;
+    /* Rose */
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+
+  /* Dark mode scrollbar */
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-muted/20;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer components {
+
+  /* Glass effect utilities */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%);
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-bounce-subtle {
+    animation: bounceSubtle 2s infinite;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes bounceSubtle {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+
+    40% {
+      transform: translateY(-4px);
+    }
+
+    60% {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Status indicators */
+  .status-online {
+    @apply bg-emerald-500 shadow-emerald-500/50;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .status-offline {
+    @apply bg-slate-400 dark:bg-slate-600;
+  }
+
+  .status-warning {
+    @apply bg-amber-500 shadow-amber-500/50;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .status-error {
+    @apply bg-red-500 shadow-red-500/50;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Modern card styles */
+  .card-modern {
+    @apply bg-white dark:bg-slate-900 rounded-2xl shadow-lg shadow-slate-900/5 dark:shadow-black/20 border border-slate-200/60 dark:border-slate-700/50;
+  }
+
+  .card-glass {
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-lg shadow-slate-900/5 dark:shadow-black/20 border border-slate-200/60 dark:border-slate-700/50;
+  }
+
+  /* Button variants */
+  .btn-gradient {
+    @apply bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-200;
+  }
+
+  .btn-gradient-purple {
+    @apply bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-200;
+  }
+
+  /* Text utilities */
+  .text-gradient {
+    @apply bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-emerald-500 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-accent {
+    @apply bg-gradient-to-r from-purple-500 to-pink-600 bg-clip-text text-transparent;
   }
 }

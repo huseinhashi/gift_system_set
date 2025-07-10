@@ -5,6 +5,8 @@ import 'package:client_app/providers/product_provider.dart';
 import 'package:client_app/providers/cart_provider.dart';
 import 'package:client_app/widgets/customer_app_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'tabs/orders_tab.dart';
+import 'tabs/payments_tab.dart';
 
 class CustomerDashboardScreen extends StatefulWidget {
   const CustomerDashboardScreen({Key? key}) : super(key: key);
@@ -41,8 +43,8 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
         index: _currentIndex,
         children: [
           _buildHomeTab(),
-          _buildOrdersTab(),
-          _buildPaymentsTab(),
+          const OrdersTab(),
+          const PaymentsTab(),
           _buildProfileTab(),
         ],
       ),
@@ -414,37 +416,70 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        product.stockQuantity > 0
+                            ? Icons.check_circle
+                            : Icons.cancel,
+                        size: 16,
+                        color: product.stockQuantity > 0
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        product.stockQuantity > 0
+                            ? 'In Stock (${product.stockQuantity})'
+                            : 'Out of Stock',
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: product.stockQuantity > 0
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Add to cart functionality
-                        Provider.of<CartProvider>(context, listen: false)
-                            .addItem(
-                          productId: product.productId,
-                          name: product.name,
-                          description: product.description,
-                          price: product.price,
-                          imageUrl: product.imageUrl,
-                          category: product.category,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product.name} added to cart'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      },
+                      onPressed: product.stockQuantity > 0
+                          ? () {
+                              // Add to cart functionality
+                              Provider.of<CartProvider>(context, listen: false)
+                                  .addItem(
+                                productId: product.productId,
+                                name: product.name,
+                                description: product.description,
+                                price: product.price,
+                                imageUrl: product.imageUrl,
+                                category: product.category,
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('${product.name} added to cart'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
+                          : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        backgroundColor: product.stockQuantity > 0
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey[400],
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: Text(
-                        'Add to Cart',
+                        product.stockQuantity > 0
+                            ? 'Add to Cart'
+                            : 'Out of Stock',
                         style: GoogleFonts.poppins(fontSize: 12),
                       ),
                     ),
@@ -454,88 +489,6 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildOrdersTab() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.shopping_bag_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'My Orders',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'View and manage your orders',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.pushNamed(context, '/customer_orders');
-            },
-            icon: const Icon(Icons.list_alt),
-            label: Text('View Orders', style: GoogleFonts.poppins()),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPaymentsTab() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.payment_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Payments',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Payment management functionality\nwill be implemented soon',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }
@@ -618,7 +571,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   title: Text('My Orders', style: GoogleFonts.poppins()),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {
-                    Navigator.pushNamed(context, '/customer_orders');
+                    setState(() {
+                      _currentIndex = 1; // Switch to orders tab
+                    });
                   },
                 ),
                 const Divider(height: 1),
@@ -626,24 +581,14 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   leading: const Icon(Icons.favorite),
                   title: Text('Wishlist', style: GoogleFonts.poppins()),
                   trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Wishlist functionality coming soon!')),
-                    );
-                  },
+                  onTap: () {},
                 ),
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.settings),
                   title: Text('Settings', style: GoogleFonts.poppins()),
                   trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Settings functionality coming soon!')),
-                    );
-                  },
+                  onTap: () {},
                 ),
               ],
             ),

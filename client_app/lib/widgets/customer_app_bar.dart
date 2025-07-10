@@ -24,7 +24,11 @@ class CustomerAppBar extends StatelessWidget implements PreferredSizeWidget {
     final productProvider = Provider.of<ProductProvider>(context);
     final theme = Theme.of(context);
 
+    // Determine if we should show back button based on current route
+    final bool shouldShowBackButton = _shouldShowBackButton(context);
+
     return AppBar(
+      automaticallyImplyLeading: shouldShowBackButton,
       title: Row(
         children: [
           Image.asset(
@@ -69,7 +73,7 @@ class CustomerAppBar extends StatelessWidget implements PreferredSizeWidget {
                   tooltip: 'Shopping Cart',
                 ),
               ),
-              if (cartProvider.itemCount > 0)
+              if (cartProvider.totalQuantity > 0)
                 Positioned(
                   right: 12,
                   top: 8,
@@ -91,7 +95,7 @@ class CustomerAppBar extends StatelessWidget implements PreferredSizeWidget {
                       minHeight: 20,
                     ),
                     child: Text(
-                      '${cartProvider.itemCount}',
+                      '${cartProvider.totalQuantity}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -151,319 +155,7 @@ class CustomerAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   void _showCartDialog(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Icons.shopping_cart,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Shopping Cart',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: cartProvider.items.isEmpty
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.shopping_cart_outlined,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Your cart is empty',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Add some products to get started!',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...cartProvider.items.map((item) =>
-                        _buildCartItem(context, item, productProvider)),
-                    const Divider(height: 32),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Total:',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Text(
-                            '\$${cartProvider.totalAmount.toStringAsFixed(2)}',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Close', style: GoogleFonts.poppins()),
-          ),
-          if (cartProvider.items.isNotEmpty) ...[
-            TextButton(
-              onPressed: () {
-                cartProvider.clearCart();
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Cart cleared'),
-                    backgroundColor: Colors.orange,
-                  ),
-                );
-              },
-              child: Text('Clear Cart', style: GoogleFonts.poppins()),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (cartProvider.items.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Your cart is empty'),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
-                  return;
-                }
-                Navigator.pushNamed(context, '/checkout');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text('Checkout', style: GoogleFonts.poppins()),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCartItem(
-      BuildContext context, CartItem item, ProductProvider productProvider) {
-    // Find the product to get stock information
-    final product = productProvider.products.firstWhere(
-      (p) => p.productId == item.productId,
-      orElse: () => Product(
-        productId: item.productId,
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        category: item.category,
-        stockQuantity: 0,
-        imageUrl: item.imageUrl,
-        isActive: true,
-        // createdAt: DateTime.now(),
-        // updatedAt: DateTime.now(),
-      ),
-    );
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Row(
-        children: [
-          if (item.imageUrl != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                'http://localhost:2322/images/${item.imageUrl}',
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.image, color: Colors.grey),
-                  );
-                },
-              ),
-            )
-          else
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.image, color: Colors.grey),
-            ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '\$${item.price.toStringAsFixed(2)}',
-                  style: GoogleFonts.poppins(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Total: \$${(item.price * item.quantity).toStringAsFixed(2)}',
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.remove, size: 16),
-                      onPressed: item.quantity > 1
-                          ? () {
-                              final cartProvider = Provider.of<CartProvider>(
-                                  context,
-                                  listen: false);
-                              cartProvider.updateQuantity(
-                                  item.productId, item.quantity - 1);
-                            }
-                          : null,
-                      constraints: const BoxConstraints(
-                        minWidth: 32,
-                        minHeight: 32,
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
-                  Container(
-                    width: 40,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      '${item.quantity}',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.add, size: 16),
-                      onPressed: item.quantity < product.stockQuantity
-                          ? () {
-                              final cartProvider = Provider.of<CartProvider>(
-                                  context,
-                                  listen: false);
-                              cartProvider.updateQuantity(
-                                  item.productId, item.quantity + 1);
-                            }
-                          : null,
-                      constraints: const BoxConstraints(
-                        minWidth: 32,
-                        minHeight: 32,
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                  ),
-                ],
-              ),
-              if (item.quantity >= product.stockQuantity)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    'Max stock: ${product.stockQuantity}',
-                    style: GoogleFonts.poppins(
-                      color: Colors.red,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
+    Navigator.pushNamed(context, '/cart');
   }
 
   void _showLogoutDialog(BuildContext context) {
@@ -514,6 +206,19 @@ class CustomerAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
+  }
+
+  bool _shouldShowBackButton(BuildContext context) {
+    // Get the current route name
+    final String? currentRoute = ModalRoute.of(context)?.settings.name;
+
+    // Don't show back button for customer dashboard and its tabs
+    if (currentRoute == '/customer_dashboard') {
+      return false;
+    }
+
+    // Show back button for other screens like cart, checkout, product details, etc.
+    return true;
   }
 
   @override

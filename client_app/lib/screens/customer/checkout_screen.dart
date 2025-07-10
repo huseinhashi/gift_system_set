@@ -24,18 +24,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    // Try to get user's saved location from auth data
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final userData = authProvider.userData;
-    if (userData != null) {
-      if (userData['lat'] != null && userData['lng'] != null) {
-        _latitude = double.tryParse(userData['lat'].toString());
-        _longitude = double.tryParse(userData['lng'].toString());
-        if (_latitude != null && _longitude != null) {
-          _useLocation = true;
-        }
-      }
-    }
+    // Location is optional and will be captured when user chooses to use it
   }
 
   Future<void> _getCurrentLocation() async {

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:client_app/providers/auth_provider.dart';
 import 'package:client_app/services/api_client.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:location/location.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -21,9 +20,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _addressController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
-  bool _isGettingLocation = false;
-  double? _latitude;
-  double? _longitude;
 
   @override
   void dispose() {
@@ -35,70 +31,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _getLocation() async {
-    setState(() {
-      _isGettingLocation = true;
-    });
-
-    try {
-      Location location = Location();
-      bool serviceEnabled;
-      PermissionStatus permissionGranted;
-      LocationData locationData;
-
-      serviceEnabled = await location.serviceEnabled();
-      if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-        if (!serviceEnabled) {
-          _showErrorMessage('Location services are disabled.');
-          return;
-        }
-      }
-
-      permissionGranted = await location.hasPermission();
-      if (permissionGranted == PermissionStatus.denied) {
-        permissionGranted = await location.requestPermission();
-        if (permissionGranted != PermissionStatus.granted) {
-          _showErrorMessage('Location permission not granted');
-          return;
-        }
-      }
-
-      locationData = await location.getLocation();
-
-      setState(() {
-        _latitude = locationData.latitude;
-        _longitude = locationData.longitude;
-      });
-
-      _showSuccessMessage('Location captured successfully');
-    } catch (e) {
-      _showErrorMessage('Could not get location: $e');
-    } finally {
-      setState(() {
-        _isGettingLocation = false;
-      });
-    }
-  }
-
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -108,8 +40,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _phoneController.text.trim(),
         _passwordController.text,
         _addressController.text.trim(),
-        lat: _latitude,
-        lng: _longitude,
       );
 
       if (success && mounted) {
@@ -229,63 +159,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: _addressController,
-                                decoration: InputDecoration(
-                                  labelText: 'Address',
-                                  prefixIcon: Icon(Icons.location_on,
-                                      color: colorScheme.primary),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your address';
-                                  }
-                                  return null;
-                                },
-                                maxLines: 2,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: IconButton(
-                                onPressed:
-                                    _isGettingLocation ? null : _getLocation,
-                                icon: _isGettingLocation
-                                    ? const SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                    : Icon(
-                                        Icons.my_location,
-                                        color: colorScheme.primary,
-                                      ),
-                                tooltip: 'Get current location',
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (_latitude != null && _longitude != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              'Location captured: ${_latitude!.toStringAsFixed(6)}, ${_longitude!.toStringAsFixed(6)}',
-                              style: TextStyle(
-                                color: colorScheme.primary,
-                                fontSize: 12,
-                              ),
+                        TextFormField(
+                          controller: _addressController,
+                          decoration: InputDecoration(
+                            labelText: 'Address',
+                            prefixIcon: Icon(Icons.location_on,
+                                color: colorScheme.primary),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your address';
+                            }
+                            return null;
+                          },
+                          maxLines: 2,
+                        ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,

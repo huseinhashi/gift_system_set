@@ -53,16 +53,13 @@ class AuthProvider extends ChangeNotifier {
 
   // Register as Customer
   Future<bool> registerCustomer(
-      String name, String phone, String password, String address,
-      {double? lat, double? lng}) async {
+      String name, String phone, String password, String address) async {
     return _performAuthOperation(() async {
       return await _authService.registerCustomer(
         name,
         phone,
         password,
         address,
-        lat,
-        lng,
       );
     });
   }

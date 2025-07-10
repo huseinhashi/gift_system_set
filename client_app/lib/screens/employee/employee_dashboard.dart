@@ -4,6 +4,7 @@ import 'package:client_app/providers/auth_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:client_app/services/customer_order_service.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:client_app/widgets/mapbox_widget.dart';
 
 class EmployeeDashboardScreen extends StatefulWidget {
   const EmployeeDashboardScreen({Key? key}) : super(key: key);
@@ -16,283 +17,7 @@ class EmployeeDashboardScreen extends StatefulWidget {
 class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   int _currentIndex = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final userData = authProvider.userData;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Employee Dashboard',
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.person),
-            onSelected: (value) {
-              switch (value) {
-                case 'profile':
-                  // Navigate to profile
-                  break;
-                case 'logout':
-                  _showLogoutDialog(context);
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'profile',
-                child: Row(
-                  children: [
-                    const Icon(Icons.person_outline),
-                    const SizedBox(width: 8),
-                    Text('Profile', style: GoogleFonts.poppins()),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    const Icon(Icons.logout),
-                    const SizedBox(width: 8),
-                    Text('Logout', style: GoogleFonts.poppins()),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          _buildOrdersTab(),
-          _buildProfileTab(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHomeTab() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.work_outline,
-            size: 80,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Employee Dashboard',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Welcome to the employee portal',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 32),
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Text(
-                    'Coming Soon',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Employee functionality will be implemented soon',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOrdersTab() {
-    return EmployeeDeliveriesTab();
-  }
-
-  Widget _buildProfileTab() {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final userData = authProvider.userData;
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Profile',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    userData?['name'] ?? 'Employee',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    userData?['phone'] ?? '',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  if (userData?['role'] != null) ...[
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        userData!['role'],
-                        style: GoogleFonts.poppins(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Logout',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Are you sure you want to logout?',
-          style: GoogleFonts.poppins(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel', style: GoogleFonts.poppins()),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final authProvider =
-                  Provider.of<AuthProvider>(context, listen: false);
-              await authProvider.logout();
-              if (context.mounted) {
-                Navigator.of(context).pushReplacementNamed('/login');
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Colors.white,
-            ),
-            child: Text('Logout', style: GoogleFonts.poppins()),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// --- Employee Deliveries Tab Widget ---
-class EmployeeDeliveriesTab extends StatefulWidget {
-  @override
-  State<EmployeeDeliveriesTab> createState() => _EmployeeDeliveriesTabState();
-}
-
-class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
+  // Moved deliveries state to parent
   final CustomerOrderService _orderService = CustomerOrderService();
   List<dynamic> _deliveries = [];
   bool _isLoading = true;
@@ -355,9 +80,290 @@ class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final userData = authProvider.userData;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Employee Dashboard',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.person),
+            onSelected: (value) {
+              switch (value) {
+                case 'profile':
+                  // Navigate to profile
+                  break;
+                case 'logout':
+                  _showLogoutDialog(context);
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    const Icon(Icons.person_outline),
+                    const SizedBox(width: 8),
+                    Text('Profile', style: GoogleFonts.poppins()),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    const Icon(Icons.logout),
+                    const SizedBox(width: 8),
+                    Text('Logout', style: GoogleFonts.poppins()),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          _buildHomeTab(),
+          _buildProfileTab(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeTab() {
+    return EmployeeDeliveriesTab(
+      deliveries: _filteredDeliveries,
+      isLoading: _isLoading,
+      error: _error,
+      filterStatus: _filterStatus,
+      onFilterChanged: (status) => setState(() => _filterStatus = status),
+      onRefresh: () async => await _fetchDeliveries(),
+      onUpdateStatus: _updateDeliveryStatus,
+    );
+  }
+
+  Widget _buildProfileTab() {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final userData = authProvider.userData;
+    final deliveriesCount = _deliveries.length;
+    final deliveredCount =
+        _deliveries.where((d) => d['delivery_status'] == 'delivered').length;
+    final pendingCount =
+        _deliveries.where((d) => d['delivery_status'] == 'pending').length;
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Profile',
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    userData?['name'] ?? 'Employee',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    userData?['phone'] ?? '',
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  if (userData?['email'] != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      userData!['email'],
+                      style: GoogleFonts.poppins(color: Colors.grey[600]),
+                    ),
+                  ],
+                  if (userData?['role'] != null) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        userData!['role'],
+                        style: GoogleFonts.poppins(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildStatCard(
+                          'Total Deliveries', deliveriesCount, context),
+                      _buildStatCard('Delivered', deliveredCount, context),
+                      _buildStatCard('Pending', pendingCount, context),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard(String label, int value, BuildContext context) {
+    return Column(
+      children: [
+        Text('$value',
+            style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Theme.of(context).colorScheme.primary)),
+        const SizedBox(height: 4),
+        Text(label,
+            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600])),
+      ],
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Logout',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: GoogleFonts.poppins(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel', style: GoogleFonts.poppins()),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final authProvider =
+                  Provider.of<AuthProvider>(context, listen: false);
+              await authProvider.logout();
+              if (context.mounted) {
+                Navigator.of(context).pushReplacementNamed('/login');
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Logout', style: GoogleFonts.poppins()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- Employee Deliveries Tab Widget ---
+class EmployeeDeliveriesTab extends StatefulWidget {
+  final List<dynamic> deliveries;
+  final bool isLoading;
+  final String? error;
+  final String filterStatus;
+  final Function(String) onFilterChanged;
+  final Future<void> Function() onRefresh;
+  final Function(int, String) onUpdateStatus;
+
+  const EmployeeDeliveriesTab({
+    Key? key,
+    required this.deliveries,
+    required this.isLoading,
+    required this.error,
+    required this.filterStatus,
+    required this.onFilterChanged,
+    required this.onRefresh,
+    required this.onUpdateStatus,
+  }) : super(key: key);
+
+  @override
+  State<EmployeeDeliveriesTab> createState() => _EmployeeDeliveriesTabState();
+}
+
+class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return RefreshIndicator(
-      onRefresh: _fetchDeliveries,
+      onRefresh: widget.onRefresh,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -373,19 +379,30 @@ class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
             _buildStatusFilter(theme),
             const SizedBox(height: 16),
             Expanded(
-              child: _isLoading
+              child: widget.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : _error != null
+                  : widget.error != null
                       ? Center(
-                          child: Text(_error!,
+                          child: Text(widget.error!,
                               style: TextStyle(color: theme.colorScheme.error)))
-                      : _filteredDeliveries.isEmpty
+                      : widget.deliveries.isEmpty
                           ? _buildEmptyState(theme)
                           : ListView.builder(
-                              itemCount: _filteredDeliveries.length,
+                              itemCount: widget.deliveries.length,
                               itemBuilder: (context, idx) {
-                                final delivery = _filteredDeliveries[idx];
-                                return _buildDeliveryCard(delivery, theme);
+                                final delivery = widget.deliveries[idx];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            EmployeeDeliveryDetailsScreen(
+                                                delivery: delivery),
+                                      ),
+                                    );
+                                  },
+                                  child: _buildDeliveryCard(delivery, theme),
+                                );
                               },
                             ),
             ),
@@ -412,18 +429,17 @@ class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
             .map((s) => Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: FilterChip(
-                    selected: _filterStatus == s['value'],
+                    selected: widget.filterStatus == s['value'],
                     label: Text(s['label']!),
-                    onSelected: (_) =>
-                        setState(() => _filterStatus = s['value']!),
+                    onSelected: (_) => widget.onFilterChanged(s['value']!),
                     backgroundColor: Colors.grey[200],
                     selectedColor: theme.colorScheme.primary.withOpacity(0.2),
                     checkmarkColor: theme.colorScheme.primary,
                     labelStyle: GoogleFonts.poppins(
-                      color: _filterStatus == s['value']
+                      color: widget.filterStatus == s['value']
                           ? theme.colorScheme.primary
                           : Colors.black87,
-                      fontWeight: _filterStatus == s['value']
+                      fontWeight: widget.filterStatus == s['value']
                           ? FontWeight.bold
                           : FontWeight.normal,
                     ),
@@ -571,7 +587,7 @@ class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
                       .toList(),
                   onChanged: (newStatus) {
                     if (newStatus != null && newStatus != status) {
-                      _updateDeliveryStatus(deliveryId, newStatus);
+                      widget.onUpdateStatus(deliveryId, newStatus);
                     }
                   },
                 ),
@@ -598,6 +614,255 @@ class _EmployeeDeliveriesTabState extends State<EmployeeDeliveriesTab> {
               backgroundColor: Colors.red),
         );
       }
+    }
+  }
+}
+
+// --- Delivery Details Screen ---
+class EmployeeDeliveryDetailsScreen extends StatelessWidget {
+  final Map<String, dynamic> delivery;
+  const EmployeeDeliveryDetailsScreen({Key? key, required this.delivery})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final order = delivery['Order'] ?? {};
+    final customer = order['Customer'] ?? {};
+    final products = order['OrderItems'] ?? [];
+    final status = delivery['delivery_status'] ?? 'pending';
+    final scheduledDate = delivery['scheduled_date'] ?? '';
+    final notes = delivery['delivery_notes'] ?? '';
+    final address = customer['address'] ?? 'No address';
+    final customerName = customer['name'] ?? 'Unknown Customer';
+    final customerPhone = customer['phone'] ?? '';
+    final lat = customer['latitude'];
+    final lng = customer['longitude'];
+    // If lat/lng are not in customer, try order
+    final orderLat = order['latitude'];
+    final orderLng = order['longitude'];
+    final hasCoords =
+        (lat != null && lng != null) || (orderLat != null && orderLng != null);
+    final double? mapLat = lat ?? orderLat;
+    final double? mapLng = lng ?? orderLng;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Delivery Details',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.local_shipping,
+                            color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 8),
+                        Text('Delivery #${delivery['delivery_id']}',
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(_capitalize(status),
+                              style: GoogleFonts.poppins(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(Icons.person, color: Colors.grey[600]),
+                        const SizedBox(width: 8),
+                        Expanded(
+                            child: Text(customerName,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold))),
+                        if (customerPhone.isNotEmpty)
+                          IconButton(
+                            icon: const Icon(Icons.phone, color: Colors.green),
+                            onPressed: () =>
+                                _callCustomer(context, customerPhone),
+                            tooltip: 'Call Customer',
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, color: Colors.grey[600]),
+                        const SizedBox(width: 8),
+                        Expanded(
+                            child: Text(address,
+                                style: GoogleFonts.poppins(
+                                    color: Colors.grey[700]))),
+                      ],
+                    ),
+                    if (scheduledDate.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.calendar_today,
+                              color: Colors.grey[600], size: 18),
+                          const SizedBox(width: 8),
+                          Text('Scheduled: $scheduledDate',
+                              style: GoogleFonts.poppins(
+                                  fontSize: 13, color: Colors.grey[700])),
+                        ],
+                      ),
+                    ],
+                    if (notes.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.note, color: Colors.grey[600], size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                              child: Text(notes,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 13, color: Colors.grey[700]))),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (hasCoords && mapLat != null && mapLng != null)
+              Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Delivery Location',
+                          style:
+                              GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 220,
+                        child: MapboxWidget(
+                          latitude: mapLat,
+                          longitude: mapLng,
+                          title: customerName,
+                          address: address,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Icon(Icons.map, color: Colors.grey[400]),
+                      const SizedBox(width: 12),
+                      Expanded(
+                          child: Text(
+                              'No map location available for this delivery',
+                              style: GoogleFonts.poppins(
+                                  color: Colors.grey[600]))),
+                    ],
+                  ),
+                ),
+              ),
+            const SizedBox(height: 16),
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Order Details',
+                        style:
+                            GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    if (products.isNotEmpty)
+                      ...products
+                          .map<Widget>((item) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.shopping_bag,
+                                        size: 18,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                        child: Text(
+                                            item['Product']?['name'] ?? '-',
+                                            style: GoogleFonts.poppins())),
+                                    Text('x${item['quantity']}',
+                                        style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
+                              ))
+                          .toList()
+                    else
+                      Text('No products found',
+                          style: GoogleFonts.poppins(color: Colors.grey[600])),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _capitalize(String s) =>
+      s.isNotEmpty ? s[0].toUpperCase() + s.substring(1) : s;
+
+  void _callCustomer(BuildContext context, String phone) async {
+    final Uri phoneUri = Uri(scheme: 'tel', path: phone);
+    if (await canLaunch(phoneUri.toString())) {
+      await launch(phoneUri.toString());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Could not call $phone'),
+            backgroundColor: Colors.red),
+      );
     }
   }
 }

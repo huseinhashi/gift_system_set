@@ -53,6 +53,17 @@ export const createPayment = async (req, res, next) => {
         .json({ success: false, message: "Order not found" });
     }
 
+    // Check if payment already exists for this order
+    const existingPayment = await Payment.findOne({
+      where: { order_id: validatedData.order_id },
+    });
+    if (existingPayment) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already exists for this order",
+      });
+    }
+
     // Set defaults for new payments
     const paymentData = {
       ...validatedData,
@@ -63,8 +74,10 @@ export const createPayment = async (req, res, next) => {
     const payment = await Payment.create(paymentData);
 
     // Update order payment status to paid
-    await order.update({ payment_status: "paid" });
-
+    await order.update({
+      status: "confirmed",
+      payment_status: "paid",
+    });
     res.status(201).json({ success: true, data: payment });
   } catch (error) {
     next(error);
@@ -183,6 +196,15 @@ export const processPayment = async (req, res, next) => {
       });
     }
 
+    // Validate amount is a valid number
+    const numericAmount = Number(amount);
+    if (isNaN(numericAmount) || numericAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid amount provided",
+      });
+    }
+
     // Check if order exists and belongs to the customer
     const order = await Order.findByPk(orderId, {
       include: [
@@ -217,15 +239,15 @@ export const processPayment = async (req, res, next) => {
 
     // Check for existing payment record for this order
     let payment = await Payment.findOne({ where: { order_id: orderId } });
-    const orderAmount = order.total_amount;
+    const orderAmount = Number(order.total_amount);
 
     if (
       payment &&
-      payment.amount == orderAmount &&
+      Number(payment.amount) == orderAmount &&
       order.payment_status === "pending"
     ) {
       // There is a pending payment record, try to process it
-      const paymentResult = await Pay(phone, orderAmount, orderId, "test");
+      const paymentResult = await Pay(phone, orderAmount, orderId);
       if (paymentResult.success) {
         await order.update({
           status: "confirmed",
@@ -261,7 +283,7 @@ export const processPayment = async (req, res, next) => {
       });
     } else if (!payment) {
       // No payment record yet, create and process
-      const paymentResult = await Pay(phone, orderAmount, orderId, "test");
+      const paymentResult = await Pay(phone, orderAmount, orderId);
       if (paymentResult.success) {
         await order.update({
           status: "confirmed",
@@ -298,6 +320,7 @@ export const processPayment = async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.error("Payment processing error:", error);
     next(error);
   }
 };

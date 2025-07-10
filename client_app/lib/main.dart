@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:client_app/screens/auth/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:client_app/providers/auth_provider.dart';
-import 'package:client_app/providers/emergency_provider.dart';
-import 'package:client_app/providers/assignment_provider.dart';
 import 'package:client_app/providers/cart_provider.dart';
 import 'package:client_app/providers/product_provider.dart';
 import 'package:client_app/screens/auth/register_screen.dart';
@@ -13,8 +11,7 @@ import 'package:client_app/screens/customer/customer_dashboard.dart';
 import 'package:client_app/screens/employee/employee_dashboard.dart';
 import 'package:client_app/screens/customer/product_details_screen.dart';
 import 'package:client_app/screens/customer/checkout_screen.dart';
-import 'package:client_app/screens/customer/customer_orders_screen.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
+import 'package:client_app/screens/customer/cart_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,8 +36,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => EmergencyProvider()),
-        ChangeNotifierProvider(create: (_) => AssignmentProvider()),
+        // ChangeNotifierProvider(create: (_) => EmergencyProvider()),
+        // ChangeNotifierProvider(create: (_) => AssignmentProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
       ],
@@ -82,7 +79,7 @@ class MyApp extends StatelessWidget {
                 return ProductDetailsScreen(productId: args);
               },
               '/checkout': (context) => const CheckoutScreen(),
-              '/customer_orders': (context) => const CustomerOrdersScreen(),
+              '/cart': (context) => const CartScreen(),
             },
             home: const SplashScreen(),
           );

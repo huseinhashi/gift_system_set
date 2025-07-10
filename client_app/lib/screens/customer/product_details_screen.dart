@@ -23,7 +23,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch product details when the screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ProductProvider>(context, listen: false)
           .fetchProductById(widget.productId);
@@ -48,11 +47,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
                     'Error loading product',
@@ -64,9 +59,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   const SizedBox(height: 8),
                   Text(
                     productProvider.error!,
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                    ),
+                    style: GoogleFonts.poppins(color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -82,16 +75,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
           final product = productProvider.selectedProduct;
           if (product == null) {
-            return const Center(
-              child: Text('Product not found'),
-            );
+            return const Center(child: Text('Product not found'));
           }
 
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Product Image
                 AspectRatio(
                   aspectRatio: 1,
                   child: product.imageUrl != null
@@ -99,36 +89,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           'http://localhost:2322/images/${product.imageUrl}',
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: double.infinity,
-                              color: Colors.grey[300],
-                              child: const Icon(
-                                Icons.image,
-                                size: 64,
-                                color: Colors.grey,
-                              ),
-                            );
-                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              _placeholderImage(),
                         )
-                      : Container(
-                          width: double.infinity,
-                          color: Colors.grey[300],
-                          child: const Icon(
-                            Icons.image,
-                            size: 64,
-                            color: Colors.grey,
-                          ),
-                        ),
+                      : _placeholderImage(),
                 ),
-
-                // Product Details
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Product Name
                       Text(
                         product.name,
                         style: GoogleFonts.poppins(
@@ -137,8 +107,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-
-                      // Price
                       Text(
                         '\$${product.price.toStringAsFixed(2)}',
                         style: GoogleFonts.poppins(
@@ -148,13 +116,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // Category
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: Theme.of(context)
                               .colorScheme
@@ -171,8 +135,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // Description
                       if (product.description.isNotEmpty) ...[
                         Text(
                           'Description',
@@ -192,8 +154,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                         const SizedBox(height: 16),
                       ],
-
-                      // Stock Information
                       Row(
                         children: [
                           Icon(
@@ -219,8 +179,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-
-                      // Quantity Selector
                       Text(
                         'Quantity',
                         style: GoogleFonts.poppins(
@@ -234,11 +192,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           IconButton(
                             onPressed:
                                 product.stockQuantity > 0 && _quantity > 1
-                                    ? () {
-                                        setState(() {
-                                          _quantity--;
-                                        });
-                                      }
+                                    ? () => setState(() => _quantity--)
                                     : null,
                             icon: const Icon(Icons.remove),
                             style: IconButton.styleFrom(
@@ -257,11 +211,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           IconButton(
                             onPressed: product.stockQuantity > 0 &&
                                     _quantity < product.stockQuantity
-                                ? () {
-                                    setState(() {
-                                      _quantity++;
-                                    });
-                                  }
+                                ? () => setState(() => _quantity++)
                                 : null,
                             icon: const Icon(Icons.add),
                             style: IconButton.styleFrom(
@@ -279,16 +229,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-
-                      // Add to Cart Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: product.stockQuantity > 0
                               ? () {
                                   final cartProvider =
-                                      Provider.of<CartProvider>(context,
-                                          listen: false);
+                                      Provider.of<CartProvider>(
+                                    context,
+                                    listen: false,
+                                  );
                                   cartProvider.addItem(
                                     productId: product.productId,
                                     name: product.name,
@@ -307,7 +257,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         label: 'View Cart',
                                         textColor: Colors.white,
                                         onPressed: () {
-                                          // Show cart dialog
                                           Navigator.pop(context);
                                         },
                                       ),
@@ -336,8 +285,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // Buy Now Button (placeholder)
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
@@ -345,8 +292,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ? () {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                          'Buy Now functionality coming soon!'),
+                                      content: Text('just add to cart!'),
                                     ),
                                   );
                                 }
@@ -373,6 +319,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _placeholderImage() {
+    return Container(
+      width: double.infinity,
+      color: Colors.grey[300],
+      child: const Icon(
+        Icons.image,
+        size: 64,
+        color: Colors.grey,
       ),
     );
   }

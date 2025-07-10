@@ -90,8 +90,6 @@ class AuthService {
     String phone,
     String password,
     String address,
-    double? lat,
-    double? lng,
   ) async {
     try {
       final Map<String, dynamic> data = {
@@ -100,10 +98,6 @@ class AuthService {
         'password_hash': password,
         'address': address,
       };
-
-      // Add coordinates if available
-      if (lat != null) data['lat'] = lat;
-      if (lng != null) data['lng'] = lng;
 
       final response = await _apiClient.request(
         method: 'POST',

@@ -18,7 +18,28 @@ export const getAllOrders = async (req, res, next) => {
       include: [
         {
           model: Customer,
-          attributes: ["customer_id", "name"],
+          attributes: ["customer_id", "name", "phone"],
+        },
+        {
+          model: OrderItem,
+          include: [
+            {
+              model: Product,
+              attributes: ["product_id", "name", "description", "image_url"],
+            },
+          ],
+        },
+        {
+          model: Delivery,
+          include: [
+            {
+              model: Employee,
+              attributes: ["employee_id", "name", "phone"],
+            },
+          ],
+        },
+        {
+          model: Payment,
         },
       ],
     });
@@ -95,7 +116,20 @@ export const createOrder = async (req, res, next) => {
 // Update an order (admin/staff only or customer if they own it)
 export const updateOrder = async (req, res, next) => {
   try {
-    const order = await Order.findByPk(req.params.id);
+    const order = await Order.findByPk(req.params.id, {
+      include: [
+        {
+          model: OrderItem,
+          include: [Product],
+        },
+        {
+          model: Delivery,
+        },
+        {
+          model: Payment,
+        },
+      ],
+    });
     if (!order) {
       return res
         .status(404)
@@ -133,12 +167,186 @@ export const updateOrder = async (req, res, next) => {
 
       await order.update(validatedData);
     } else {
-      // Admin/staff can update all fields
-      const validatedData = orderSchema.partial().parse(req.body);
-      await order.update(validatedData);
+      // Admin/staff can update all fields and order items
+      const { order: orderData, items } = req.body;
+
+      // Validate status updates
+      if (orderData && orderData.status) {
+        const newStatus = orderData.status;
+        const currentStatus = order.status;
+
+        console.log("Status update validation:", {
+          newStatus,
+          currentStatus,
+          hasDelivery: !!order.Delivery,
+          deliveryStatus: order.Delivery?.delivery_status,
+          hasPayment: !!order.Payment,
+        });
+
+        // Check if status transition is valid
+        if (newStatus === "delivered") {
+          // Can only set to delivered if there's a delivery record with delivered status
+          const delivery = order.Delivery;
+          if (!delivery || delivery.delivery_status !== "delivered") {
+            return res.status(400).json({
+              success: false,
+              message:
+                "Cannot set order status to 'delivered' without a delivered delivery record",
+            });
+          }
+        } else if (newStatus === "confirmed") {
+          // Can set to confirmed if there's a delivery record or payment
+          const delivery = order.Delivery;
+          const payment = order.Payment;
+          if (!delivery && !payment) {
+            return res.status(400).json({
+              success: false,
+              message:
+                "Cannot set order status to 'confirmed' without a delivery or payment record",
+            });
+          }
+        } else if (newStatus === "cancelled") {
+          // Can cancel if not already delivered
+          if (currentStatus === "delivered") {
+            return res.status(400).json({
+              success: false,
+              message: "Cannot cancel an already delivered order",
+            });
+          }
+        } else if (newStatus === "returned") {
+          // Can only return if previously delivered
+          if (currentStatus !== "delivered") {
+            return res.status(400).json({
+              success: false,
+              message:
+                "Cannot set order status to 'returned' unless it was previously delivered",
+            });
+          }
+        }
+      }
+
+      // Validate payment status updates
+      if (orderData && orderData.payment_status) {
+        const newPaymentStatus = orderData.payment_status;
+        const currentPaymentStatus = order.payment_status;
+
+        if (newPaymentStatus === "paid") {
+          // Can only set to paid if there's a payment record
+          const payment = order.Payment;
+          if (!payment) {
+            return res.status(400).json({
+              success: false,
+              message:
+                "Cannot set payment status to 'paid' without a payment record",
+            });
+          }
+        } else if (newPaymentStatus === "pending") {
+          // Can set to pending if payment was deleted
+          const payment = order.Payment;
+          if (payment) {
+            return res.status(400).json({
+              success: false,
+              message:
+                "Cannot set payment status to 'pending' while payment record exists",
+            });
+          }
+        }
+      }
+
+      // Update order fields
+      if (orderData) {
+        const validatedData = orderSchema.partial().parse(orderData);
+        await order.update(validatedData);
+      }
+
+      // Update order items if provided
+      if (items && Array.isArray(items)) {
+        // Store current order items for stock reversion
+        const currentOrderItems = await OrderItem.findAll({
+          where: { order_id: order.order_id },
+        });
+
+        // Revert stock for current items
+        for (const currentItem of currentOrderItems) {
+          const product = await Product.findByPk(currentItem.product_id);
+          if (product) {
+            await product.update({
+              stock_quantity: product.stock_quantity + currentItem.quantity,
+            });
+          }
+        }
+
+        // Delete existing order items
+        await OrderItem.destroy({
+          where: { order_id: order.order_id },
+        });
+
+        // Create new order items
+        for (const item of items) {
+          const product = await Product.findByPk(item.product_id);
+          if (!product) {
+            throw new Error(`Product not found: ${item.product_id}`);
+          }
+          if (item.quantity > product.stock_quantity) {
+            throw new Error(
+              `Requested quantity (${item.quantity}) exceeds available stock (${product.stock_quantity}) for product ${product.name}`
+            );
+          }
+
+          await OrderItem.create({
+            order_id: order.order_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: product.price,
+          });
+        }
+
+        // Recalculate total amount
+        const orderItems = await OrderItem.findAll({
+          where: { order_id: order.order_id },
+          include: [Product],
+        });
+
+        const totalAmount = orderItems.reduce((sum, item) => {
+          return sum + Number(item.price) * item.quantity;
+        }, 0);
+
+        await order.update({ total_amount: totalAmount });
+      }
     }
 
-    res.json({ success: true, data: order });
+    // Fetch updated order with all associations
+    const updatedOrder = await Order.findByPk(req.params.id, {
+      include: [
+        {
+          model: Customer,
+          attributes: ["customer_id", "name", "phone", "address"],
+        },
+        {
+          model: OrderItem,
+          include: [
+            {
+              model: Product,
+              attributes: ["product_id", "name", "description", "image_url"],
+            },
+          ],
+        },
+        {
+          model: Delivery,
+          include: [
+            {
+              model: Employee,
+              attributes: ["employee_id", "name", "phone"],
+            },
+          ],
+        },
+        {
+          model: Payment,
+        },
+      ],
+    });
+
+    res.json({ success: true, data: updatedOrder });
   } catch (error) {
     next(error);
   }
@@ -147,7 +355,14 @@ export const updateOrder = async (req, res, next) => {
 // Delete an order (admin/staff only)
 export const deleteOrder = async (req, res, next) => {
   try {
-    const order = await Order.findByPk(req.params.id);
+    const order = await Order.findByPk(req.params.id, {
+      include: [
+        {
+          model: OrderItem,
+          include: [Product],
+        },
+      ],
+    });
     if (!order) {
       return res
         .status(404)
@@ -159,6 +374,17 @@ export const deleteOrder = async (req, res, next) => {
         message: "Cannot delete order: already delivered or payment received.",
       });
     }
+
+    // Revert product stock before deleting order
+    for (const orderItem of order.OrderItems) {
+      const product = await Product.findByPk(orderItem.product_id);
+      if (product) {
+        await product.update({
+          stock_quantity: product.stock_quantity + orderItem.quantity,
+        });
+      }
+    }
+
     await order.destroy();
     res.json({ success: true, message: "Order deleted successfully" });
   } catch (error) {
