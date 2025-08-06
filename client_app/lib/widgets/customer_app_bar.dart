@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/providers/cart_provider.dart';
-import 'package:client_app/providers/auth_provider.dart';
-import 'package:client_app/providers/product_provider.dart';
+import '../providers/cart_provider.dart';
+import '../providers/auth_provider.dart';
+import '../providers/product_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomerAppBar extends StatelessWidget implements PreferredSizeWidget {

@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database/connection.js";
-import bcrypt from "bcrypt";
 
 const Admin = sequelize.define(
   "Admin",
@@ -16,16 +15,16 @@ const Admin = sequelize.define(
     },
     email: {
       type: DataTypes.STRING(100),
-      allowNull: false,
-      unique: true,
+      allowNull: true,
     },
     phone: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    password_hash: {
-      type: DataTypes.TEXT,
+    wallet_address: {
+      type: DataTypes.STRING(42),
       allowNull: false,
+      unique: true,
     },
     is_active: {
       type: DataTypes.BOOLEAN,
@@ -44,23 +43,7 @@ const Admin = sequelize.define(
   {
     tableName: "admins",
     timestamps: false,
-    hooks: {
-      beforeCreate: async (admin) => {
-        if (admin.password_hash) {
-          admin.password_hash = await bcrypt.hash(admin.password_hash, 10);
-        }
-      },
-      beforeUpdate: async (admin) => {
-        if (admin.changed("password_hash")) {
-          admin.password_hash = await bcrypt.hash(admin.password_hash, 10);
-        }
-      },
-    },
   }
 );
-
-Admin.prototype.validPassword = async function (password) {
-  return await bcrypt.compare(password, this.password_hash);
-};
 
 export default Admin;

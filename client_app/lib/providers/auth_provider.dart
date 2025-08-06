@@ -1,5 +1,5 @@
 // lib/providers/auth_provider.dart
-import 'package:client_app/services/auth_service.dart';
+import '../services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 

@@ -1,6 +1,6 @@
-import 'package:client_app/services/api_client.dart';
-import 'package:client_app/providers/cart_provider.dart';
-import 'package:client_app/providers/auth_provider.dart';
+import 'api_client.dart';
+import '../providers/cart_provider.dart';
+import '../providers/auth_provider.dart';
 
 class OrderService {
   static final ApiClient _apiClient = ApiClient();

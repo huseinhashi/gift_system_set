@@ -26,6 +26,7 @@ import {
   Sparkles,
   Activity,
   Zap,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -133,6 +134,14 @@ export const Layout = ({ children }) => {
       href: "/deliveries",
       description: "Manage deliveries",
       roles: ["admin", "staff"],
+      badge: null,
+    },
+    {
+      title: "Reports",
+      icon: BarChart3,
+      href: "/reports",
+      description: "Comprehensive reports and analytics",
+      roles: ["admin"],
       badge: null,
     },
   ];
@@ -475,14 +484,14 @@ export const Layout = ({ children }) => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
-                <DropdownMenuItem onClick={() => navigate("/admin/profile")} className="cursor-pointer p-4 hover:bg-slate-50 dark:hover:bg-slate-800">
+                {/* <DropdownMenuItem onClick={() => navigate("/admin/profile")} className="cursor-pointer p-4 hover:bg-slate-50 dark:hover:bg-slate-800">
                   <UserCircle className="mr-4 h-5 w-5" />
                   <span className="font-medium">Profile Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/admin/settings")} className="cursor-pointer p-4 hover:bg-slate-50 dark:hover:bg-slate-800">
+                </DropdownMenuItem> */}
+                {/* <DropdownMenuItem onClick={() => navigate("/admin/settings")} className="cursor-pointer p-4 hover:bg-slate-50 dark:hover:bg-slate-800">
                   <Settings className="mr-4 h-5 w-5" />
                   <span className="font-medium">Preferences</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                 <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-4 font-medium">
                   <LogOut className="mr-4 h-5 w-5" />

@@ -5,7 +5,7 @@ export const adminSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
   phone: z.string().optional(),
-  password_hash: z.string().min(6).max(100),
+  wallet_address: z.string().min(42).max(42),
   role: z.enum(["admin", "staff"]).default("staff"),
   is_active: z.boolean().optional(),
 });

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/providers/auth_provider.dart';
-import 'package:client_app/providers/product_provider.dart';
-import 'package:client_app/providers/cart_provider.dart';
-import 'package:client_app/widgets/customer_app_bar.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/product_provider.dart';
+import '../../providers/cart_provider.dart';
+import '../../widgets/customer_app_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'tabs/orders_tab.dart';
 import 'tabs/payments_tab.dart';
@@ -19,6 +19,8 @@ class CustomerDashboardScreen extends StatefulWidget {
 class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   int _currentIndex = 0;
   String _selectedCategory = 'all';
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -27,6 +29,12 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ProductProvider>(context, listen: false).fetchProducts();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -246,6 +254,46 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
 
                 const SizedBox(height: 24),
 
+                // Search Bar
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.toLowerCase();
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search products...',
+                      hintStyle: GoogleFonts.poppins(color: Colors.grey[600]),
+                      prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(Icons.clear, color: Colors.grey[600]),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _searchQuery = '';
+                                });
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
                 // Category Filter
                 Text(
                   'Categories',
@@ -271,33 +319,80 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 const SizedBox(height: 24),
 
                 // Products Grid
-                Text(
-                  _selectedCategory == 'all'
-                      ? 'All Products'
-                      : _getCategoryDisplayName(_selectedCategory),
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _selectedCategory == 'all'
+                          ? 'All Products'
+                          : _getCategoryDisplayName(_selectedCategory),
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (_searchQuery.isNotEmpty || _selectedCategory != 'all')
+                      Text(
+                        '${_getFilteredProducts(productProvider.products).length} products',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 16),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+                
+                // Show message if no products match search
+                if (_getFilteredProducts(productProvider.products).isEmpty && 
+                    (_searchQuery.isNotEmpty || _selectedCategory != 'all'))
+                  Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No products found',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _searchQuery.isNotEmpty
+                              ? 'Try adjusting your search terms'
+                              : 'Try selecting a different category',
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey[600],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.75,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemCount:
+                        _getFilteredProducts(productProvider.products).length,
+                    itemBuilder: (context, index) {
+                      final product =
+                          _getFilteredProducts(productProvider.products)[index];
+                      return _buildProductCard(product);
+                    },
                   ),
-                  itemCount:
-                      _getFilteredProducts(productProvider.products).length,
-                  itemBuilder: (context, index) {
-                    final product =
-                        _getFilteredProducts(productProvider.products)[index];
-                    return _buildProductCard(product);
-                  },
-                ),
               ],
             ),
           ),
@@ -307,12 +402,26 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   }
 
   List<Product> _getFilteredProducts(List<Product> products) {
-    if (_selectedCategory == 'all') {
-      return products;
+    List<Product> filteredProducts = products;
+
+    // Filter by category
+    if (_selectedCategory != 'all') {
+      filteredProducts = filteredProducts
+          .where((product) => product.category == _selectedCategory)
+          .toList();
     }
-    return products
-        .where((product) => product.category == _selectedCategory)
-        .toList();
+
+    // Filter by search query
+    if (_searchQuery.isNotEmpty) {
+      filteredProducts = filteredProducts
+          .where((product) =>
+              product.name.toLowerCase().contains(_searchQuery) ||
+              product.description.toLowerCase().contains(_searchQuery) ||
+              product.category.toLowerCase().contains(_searchQuery))
+          .toList();
+    }
+
+    return filteredProducts;
   }
 
   Widget _buildCategoryChip(String category, String label) {

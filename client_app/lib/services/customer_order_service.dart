@@ -1,4 +1,4 @@
-import 'package:client_app/services/api_client.dart';
+import 'api_client.dart';
 
 class CustomerOrderService {
   final ApiClient _apiClient = ApiClient();

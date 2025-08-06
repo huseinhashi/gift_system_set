@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/services/customer_order_service.dart';
-import 'package:client_app/services/order_service.dart';
-import 'package:client_app/providers/auth_provider.dart';
+import '../../../services/customer_order_service.dart';
+import '../../../services/order_service.dart';
+import '../../../providers/auth_provider.dart';
 
 class PaymentsTab extends StatefulWidget {
   const PaymentsTab({Key? key}) : super(key: key);

@@ -21,23 +21,33 @@ const generateToken = (user, type, role) => {
   );
 };
 
-// Admin login
+// Admin login with wallet
 export const loginAdmin = async (req, res, next) => {
   try {
-    const validatedData = loginSchema.parse(req.body);
+    const { wallet_address } = req.body;
+    
+    if (!wallet_address) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Wallet address is required" });
+    }
+
     const admin = await Admin.findOne({
-      where: { email: validatedData.email },
+      where: { wallet_address: wallet_address.toLowerCase() },
     });
-    if (!admin || !(await admin.validPassword(validatedData.password))) {
+    
+    if (!admin) {
       return res
         .status(401)
-        .json({ success: false, message: "Invalid credentials" });
+        .json({ success: false, message: "Wallet address not registered" });
     }
+    
     if (!admin.is_active) {
       return res
         .status(403)
         .json({ success: false, message: "Account is inactive" });
     }
+    
     const token = generateToken(admin, "admin", admin.role);
     res.json({ success: true, data: { admin, token } });
   } catch (error) {

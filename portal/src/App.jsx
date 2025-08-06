@@ -13,6 +13,7 @@ import { OrdersPage } from "@/pages/admin/OrdersPage";
 import { OrderDetailsPage } from "@/pages/admin/OrderDetailsPage";
 import { PaymentsPage } from "@/pages/admin/PaymentsPage";
 import { DeliveriesPage } from "@/pages/admin/DeliveriesPage";
+import { ReportsPage } from "@/pages/admin/ReportsPage";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
@@ -117,6 +118,17 @@ function App() {
               <ProtectedRoute allowedRoles={["admin", "staff"]}>
                 <Layout>
                   <DeliveriesPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          {/* Reports - Admin Only */}
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Layout>
+                  <ReportsPage />
                 </Layout>
               </ProtectedRoute>
             }

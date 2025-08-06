@@ -1,104 +1,104 @@
-// src/pages/auth/LoginPage.jsx - Simplified for Fire Emergency System
+// src/pages/auth/LoginPage.jsx - Admin/Staff Login with MetaMask
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, KeyRound, AlertCircle } from "lucide-react";
+import { Wallet, AlertCircle, Shield } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
 
 export const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { login } = useAuth();
+  const { loginWithWallet, isConnecting } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
-  });
-
-  const onSubmit = async (data) => {
+  const handleWalletLogin = async () => {
     try {
       setError(null);
       setIsLoading(true);
-      await login(data.email, data.password);
-      navigate("/dashboard");
+      await loginWithWallet();
+      toast({
+        title: "Success",
+        description: "Successfully connected with MetaMask",
+      });
     } catch (error) {
       setError(error.message);
       toast({
         variant: "destructive",
-        title: "Sign in failed",
-        description: error.message || "Please check your credentials and try again",
+        title: "Connection failed",
+        description: error.message || "Failed to connect with MetaMask",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleInstallMetaMask = () => {
+    window.open("https://metamask.io/download/", "_blank");
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-900 dark:to-orange-950">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-blue-100 dark:from-gray-900 dark:to-emerald-950">
       <div className="w-full max-w-md p-8 rounded-xl bg-white dark:bg-card shadow-lg">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <AlertCircle className="h-8 w-8" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <Shield className="h-8 w-8" />
           </div>
           <h1 className="text-2xl font-bold">Admin/Staff Login</h1>
-          <p className="text-sm text-muted-foreground">Enter your credentials to access the dashboard</p>
+          <p className="text-sm text-muted-foreground">
+            Connect your MetaMask wallet to access the dashboard
+          </p>
         </div>
+
         {error && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email address"
-                className="pl-10"
-                {...register("email")}
-              />
+
+        <div className="space-y-4">
+          {!window.ethereum ? (
+            <div className="text-center space-y-4">
+              <Alert>
+                <Wallet className="h-4 w-4" />
+                <AlertDescription>
+                  MetaMask is not installed. Please install MetaMask to continue.
+                </AlertDescription>
+              </Alert>
+              <Button onClick={handleInstallMetaMask} className="w-full">
+                Install MetaMask
+              </Button>
             </div>
-            {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+          ) : (
+            <Button
+              onClick={handleWalletLogin}
+              disabled={isLoading || isConnecting}
+              className="w-full h-12 text-lg"
+            >
+              {isLoading || isConnecting ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Connecting...
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Wallet className="h-5 w-5" />
+                  Connect with MetaMask
+                </div>
+              )}
+            </Button>
+          )}
+
+          <div className="text-center text-sm text-muted-foreground">
+            <p>Only registered wallet addresses can access the admin dashboard.</p>
+            <p className="mt-2">
+              Make sure you're connected to the correct MetaMask account.
+            </p>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <KeyRound className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type="password"
-                className="pl-10"
-                {...register("password")}
-              />
-            </div>
-            {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
+        </div>
       </div>
     </div>
   );

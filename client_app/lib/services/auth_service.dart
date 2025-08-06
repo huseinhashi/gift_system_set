@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:client_app/services/api_client.dart';
+import 'api_client.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();

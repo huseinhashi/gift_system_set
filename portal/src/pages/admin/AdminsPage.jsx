@@ -11,9 +11,9 @@ import { z } from "zod";
 // Inline adminSchema for frontend validation
 const adminSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name cannot exceed 100 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
   phone: z.string().optional(),
-  password_hash: z.string().min(6, "Password must be at least 6 characters").max(100, "Password cannot exceed 100 characters"),
+  wallet_address: z.string().min(42, "Wallet address must be 42 characters").max(42, "Wallet address must be 42 characters"),
   role: z.enum(["admin", "staff"]).default("staff"),
   is_active: z.boolean().optional(),
 });
@@ -31,7 +31,7 @@ export const AdminsPage = () => {
     name: "",
     email: "",
     phone: "",
-    password_hash: "",
+    wallet_address: "",
     role: "staff",
     is_active: true,
   });
@@ -42,6 +42,14 @@ export const AdminsPage = () => {
     { accessorKey: "name", header: "Name", cell: ({ row }) => row.getValue("name") ?? '-' },
     { accessorKey: "email", header: "Email", cell: ({ row }) => row.getValue("email") ?? '-' },
     { accessorKey: "phone", header: "Phone", cell: ({ row }) => row.getValue("phone") ?? '-' },
+    { 
+      accessorKey: "wallet_address", 
+      header: "Wallet Address", 
+      cell: ({ row }) => {
+        const address = row.getValue("wallet_address");
+        return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '-';
+      }
+    },
     { accessorKey: "role", header: "Role", cell: ({ row }) => row.getValue("role") ?? '-' },
     { accessorKey: "is_active", header: "Active", cell: ({ row }) => row.getValue("is_active") ? "Yes" : "No" },
     {
@@ -87,7 +95,8 @@ export const AdminsPage = () => {
   const filterAdmins = () => {
     const filtered = admins.filter((admin) =>
       admin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admin.email.toLowerCase().includes(searchTerm.toLowerCase())
+      admin.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      admin.wallet_address?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredAdmins(filtered);
   };
@@ -97,7 +106,7 @@ export const AdminsPage = () => {
       name: "",
       email: "",
       phone: "",
-      password_hash: "",
+      wallet_address: "",
       role: "staff",
       is_active: true,
     });
@@ -107,7 +116,7 @@ export const AdminsPage = () => {
 
   const handleEditClick = (admin) => {
     setSelectedAdmin(admin);
-    setFormData({ ...admin, password_hash: "" });
+    setFormData({ ...admin });
     setValidationErrors({});
     setIsEditDialogOpen(true);
   };
@@ -148,7 +157,6 @@ export const AdminsPage = () => {
   const handleEdit = async () => {
     try {
       const dataToSend = { ...formData };
-      if (!dataToSend.password_hash) delete dataToSend.password_hash;
       adminSchema.partial().parse(dataToSend);
       await api.put(`/admins/${selectedAdmin.admin_id}`, dataToSend);
       toast({ title: "Success", description: "Admin updated successfully" });
@@ -188,7 +196,7 @@ export const AdminsPage = () => {
       </div>
       <div className="flex items-center gap-4">
         <Input
-          placeholder="Search admins by name or email..."
+          placeholder="Search admins by name, email, or wallet address..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -203,7 +211,7 @@ export const AdminsPage = () => {
           </DialogHeader>
           <form className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Name *</Label>
               <Input
                 id="name"
                 name="name"
@@ -219,6 +227,7 @@ export const AdminsPage = () => {
               <Input
                 id="email"
                 name="email"
+                type="email"
                 value={formData.email}
                 onChange={handleInputChange}
               />
@@ -239,16 +248,16 @@ export const AdminsPage = () => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password_hash">Password</Label>
+              <Label htmlFor="wallet_address">Wallet Address *</Label>
               <Input
-                id="password_hash"
-                name="password_hash"
-                type="password"
-                value={formData.password_hash}
+                id="wallet_address"
+                name="wallet_address"
+                placeholder="0x..."
+                value={formData.wallet_address}
                 onChange={handleInputChange}
               />
-              {validationErrors.password_hash && (
-                <p className="text-sm text-destructive">{validationErrors.password_hash}</p>
+              {validationErrors.wallet_address && (
+                <p className="text-sm text-destructive">{validationErrors.wallet_address}</p>
               )}
             </div>
             <div className="space-y-2">
@@ -292,7 +301,7 @@ export const AdminsPage = () => {
           </DialogHeader>
           <form className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Name *</Label>
               <Input
                 id="name"
                 name="name"
@@ -308,6 +317,7 @@ export const AdminsPage = () => {
               <Input
                 id="email"
                 name="email"
+                type="email"
                 value={formData.email}
                 onChange={handleInputChange}
               />
@@ -328,16 +338,16 @@ export const AdminsPage = () => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password_hash">New Password (leave blank to keep current)</Label>
+              <Label htmlFor="wallet_address">Wallet Address *</Label>
               <Input
-                id="password_hash"
-                name="password_hash"
-                type="password"
-                value={formData.password_hash}
+                id="wallet_address"
+                name="wallet_address"
+                placeholder="0x..."
+                value={formData.wallet_address}
                 onChange={handleInputChange}
               />
-              {validationErrors.password_hash && (
-                <p className="text-sm text-destructive">{validationErrors.password_hash}</p>
+              {validationErrors.wallet_address && (
+                <p className="text-sm text-destructive">{validationErrors.wallet_address}</p>
               )}
             </div>
             <div className="space-y-2">

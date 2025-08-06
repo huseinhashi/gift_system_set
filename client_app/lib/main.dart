@@ -1,29 +1,29 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:client_app/screens/auth/login_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/providers/auth_provider.dart';
-import 'package:client_app/providers/cart_provider.dart';
-import 'package:client_app/providers/product_provider.dart';
-import 'package:client_app/screens/auth/register_screen.dart';
-import 'package:client_app/screens/splash_screen.dart';
-import 'package:client_app/screens/customer/customer_dashboard.dart';
-import 'package:client_app/screens/employee/employee_dashboard.dart';
-import 'package:client_app/screens/customer/product_details_screen.dart';
-import 'package:client_app/screens/customer/checkout_screen.dart';
-import 'package:client_app/screens/customer/cart_screen.dart';
+import 'providers/auth_provider.dart';
+import 'providers/cart_provider.dart';
+import 'providers/product_provider.dart';
+import 'screens/auth/register_screen.dart';
+import 'screens/splash_screen.dart';
+import 'screens/customer/customer_dashboard.dart';
+import 'screens/employee/employee_dashboard.dart';
+import 'screens/customer/product_details_screen.dart';
+import 'screens/customer/checkout_screen.dart';
+import 'screens/customer/cart_screen.dart';
+import 'utils/AppColor.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // // Initialize Mapbox with your access token
-  // try {
-  //   MapboxOptions.setAccessToken(
-  //       "pk.eyJ1IjoiaHVzZWluaGFzaGkiLCJhIjoiY205dGZnamowMGJpcTJscjZ1d3MwbW44diJ9.rPualb13tYJzXX_1vSXBGg");
-  //   print("Mapbox token set successfully");
-  // } catch (e) {
-  //   print("Error setting Mapbox token: $e");
-  // }
+  try {
+    MapboxOptions.setAccessToken(
+        "pk.eyJ1IjoiaHVzZWluaGFzaGkiLCJhIjoiY205dGZnamowMGJpcTJscjZ1d3MwbW44diJ9.rPualb13tYJzXX_1vSXBGg");
+    print("Mapbox token set successfully");
+  } catch (e) {
+    print("Error setting Mapbox token: $e");
+  }
 
   runApp(const MyApp());
 }
@@ -48,11 +48,11 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF6366F1),
-                primary: const Color(0xFF6366F1),
-                secondary: const Color(0xFF14B8A6),
-                surface: Colors.white,
-                background: const Color(0xFFF8FAFC),
+                seedColor: primaryColor,
+                primary: primaryColor,
+                secondary: secondaryColor,
+                surface: surfaceColor,
+                background: backgroundColor,
               ),
               useMaterial3: true,
               appBarTheme: const AppBarTheme(

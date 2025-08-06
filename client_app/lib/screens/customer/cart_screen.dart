@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/providers/cart_provider.dart';
-import 'package:client_app/providers/product_provider.dart';
-import 'package:client_app/widgets/customer_app_bar.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/product_provider.dart';
+import '../../widgets/customer_app_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CartScreen extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/services/customer_order_service.dart';
-import 'package:client_app/services/order_service.dart';
-import 'package:client_app/screens/customer/product_details_screen.dart';
-import 'package:client_app/providers/auth_provider.dart';
+import '../../../services/customer_order_service.dart';
+import '../../../services/order_service.dart';
+import '../product_details_screen.dart';
+import '../../../providers/auth_provider.dart';
 
 class OrdersTab extends StatefulWidget {
   const OrdersTab({Key? key}) : super(key: key);

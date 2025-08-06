@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:client_app/services/product_service.dart';
+import '../services/product_service.dart';
 
 class Product {
   final int productId;

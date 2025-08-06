@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:client_app/providers/auth_provider.dart';
+import '../../providers/auth_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:client_app/services/customer_order_service.dart';
+import '../../services/customer_order_service.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:client_app/widgets/mapbox_widget.dart';
+import '../../widgets/mapbox_widget.dart';
 
 class EmployeeDashboardScreen extends StatefulWidget {
   const EmployeeDashboardScreen({Key? key}) : super(key: key);

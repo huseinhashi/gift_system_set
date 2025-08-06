@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-// Admin login
+// Admin login with wallet
 router.post("/admin/login", loginAdmin);
 // Employee login
 router.post("/employee/login", loginEmployee);
