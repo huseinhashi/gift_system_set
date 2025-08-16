@@ -15,23 +15,37 @@ import { z } from "zod";
 
 // Zod schema for order validation
 const orderSchema = z.object({
-  customer_id: z.string()
-    .min(1, "Customer is required")
-    .refine((val) => !isNaN(Number(val)), "Customer ID must be a valid number"),
+  customer_id: z.union([
+    z.string()
+      .min(1, "Customer is required")
+      .refine((val) => !isNaN(Number(val)), "Customer ID must be a valid number"),
+    z.number()
+      .min(1, "Customer ID must be greater than 0")
+  ]),
   status: z.enum(["pending", "confirmed", "delivered", "cancelled", "returned"]).optional(),
   payment_status: z.enum(["pending", "paid", "failed"]).optional(),
 });
 
 const orderItemSchema = z.object({
-  product_id: z.string()
-    .min(1, "Product is required")
-    .refine((val) => !isNaN(Number(val)), "Product ID must be a valid number"),
-  quantity: z.string()
-    .min(1, "Quantity is required")
-    .refine((val) => !isNaN(Number(val)), "Quantity must be a valid number")
-    .refine((val) => Number(val) > 0, "Quantity must be greater than 0")
-    .refine((val) => Number(val) <= 999999, "Quantity cannot exceed 999,999")
-    .refine((val) => Number.isInteger(Number(val)), "Quantity must be a whole number"),
+  product_id: z.union([
+    z.string()
+      .min(1, "Product is required")
+      .refine((val) => !isNaN(Number(val)), "Product ID must be a valid number"),
+    z.number()
+      .min(1, "Product ID must be greater than 0")
+  ]),
+  quantity: z.union([
+    z.string()
+      .min(1, "Quantity is required")
+      .refine((val) => !isNaN(Number(val)), "Quantity must be a valid number")
+      .refine((val) => Number(val) > 0, "Quantity must be greater than 0")
+      .refine((val) => Number(val) <= 999999, "Quantity cannot exceed 999,999")
+      .refine((val) => Number.isInteger(Number(val)), "Quantity must be a whole number"),
+    z.number()
+      .min(1, "Quantity must be greater than 0")
+      .max(999999, "Quantity cannot exceed 999,999")
+      .int("Quantity must be a whole number")
+  ]),
 });
 
 const orderFormSchema = z.object({
@@ -176,7 +190,7 @@ export function OrdersPage() {
 
   // Order item management
   const handleAddOrderItem = () => {
-    setOrderItems((items) => [...items, { product_id: "", quantity: 1 }]);
+    setOrderItems((items) => [...items, { product_id: "", quantity: "1" }]);
   };
   const handleRemoveOrderItem = (idx) => {
     setOrderItems((items) => items.filter((_, i) => i !== idx));
@@ -197,7 +211,7 @@ export function OrdersPage() {
     const p = products.find((p) => String(p.product_id) === String(product_id));
     return p ? Number(p.stock_quantity) : 0;
   };
-  const lineTotal = (item) => getProductPrice(item.product_id) * (Number(item.quantity) || 0);
+  const lineTotal = (item) => getProductPrice(item.product_id) * (Number(item.quantity || 0));
   const orderTotal = orderItems.reduce((sum, item) => sum + lineTotal(item), 0);
 
   // Form handlers
@@ -222,7 +236,7 @@ export function OrdersPage() {
   const handleEditOrder = (order) => {
     setEditingOrder(order);
     setOrderForm({ 
-      customer_id: String(order.customer_id),
+      customer_id: String(order.customer_id || ''),
       status: order.status || "pending",
       payment_status: order.payment_status || "pending"
     });
@@ -285,7 +299,7 @@ export function OrdersPage() {
         // Additional stock validation
         for (let i = 0; i < orderItems.length; i++) {
           const item = orderItems[i];
-          if (Number(item.quantity) > getProductStock(item.product_id)) {
+          if (Number(item.quantity || 0) > getProductStock(item.product_id)) {
             setValidationErrors((v) => ({ ...v, [`item_${i}_quantity`]: "Exceeds available stock" }));
             return;
           }
@@ -295,7 +309,7 @@ export function OrdersPage() {
           order: { customer_id: Number(orderForm.customer_id) },
           items: orderItems.map((item) => ({
             product_id: Number(item.product_id),
-            quantity: Number(item.quantity),
+            quantity: Number(item.quantity || 0),
           })),
         };
         
@@ -719,7 +733,7 @@ export function OrdersPage() {
                         type="number"
                         min={1}
                         max={getProductStock(item.product_id)}
-                        value={item.quantity}
+                        value={item.quantity || ""}
                         onChange={(e) => handleOrderItemChange(idx, "quantity", e.target.value)}
                       />
                       {validationErrors[`item_${idx}_quantity`] && <p className="text-sm text-destructive">{validationErrors[`item_${idx}_quantity`]}</p>}
