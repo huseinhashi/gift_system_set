@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // Root base URL (no /api/v1)
-export const ROOT_BASE_URL = "http://localhost:2322";
+export const ROOT_BASE_URL = "https://giftsystjust.up.railway.app";
 
 const api = axios.create({
   baseURL: `${ROOT_BASE_URL}/api/v1`,
