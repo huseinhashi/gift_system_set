@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../services/customer_order_service.dart';
+import '../../../services/api_client.dart';
 import '../product_details_screen.dart';
 import '../../../providers/auth_provider.dart';
 
@@ -14,6 +15,7 @@ class OrdersTab extends StatefulWidget {
 
 class _OrdersTabState extends State<OrdersTab> {
   final CustomerOrderService _orderService = CustomerOrderService();
+  final ApiClient _apiClient = ApiClient();
   List<dynamic> _orders = [];
   bool _isLoading = true;
   String? _error;
@@ -298,6 +300,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   String? _payError;
   String? _paySuccess;
   final CustomerOrderService _orderService = CustomerOrderService();
+  final ApiClient _apiClient = ApiClient();
   Map<String, dynamic>? _orderDetails;
   bool _isLoadingDetails = true;
 
@@ -484,7 +487,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.network(
-                                  'http://localhost:2322/images/${product['image_url']}',
+                                  _apiClient.getImageUrl(product['image_url']),
                                   width: 60,
                                   height: 60,
                                   fit: BoxFit.cover,

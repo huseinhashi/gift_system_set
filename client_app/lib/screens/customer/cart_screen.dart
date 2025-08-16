@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../widgets/customer_app_bar.dart';
+import '../../services/api_client.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CartScreen extends StatefulWidget {
@@ -13,6 +14,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final ApiClient _apiClient = ApiClient();
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -35,11 +38,7 @@ class _CartScreenState extends State<CartScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[400]),
           const SizedBox(height: 24),
           Text(
             'Your cart is empty',
@@ -52,10 +51,7 @@ class _CartScreenState extends State<CartScreen> {
           const SizedBox(height: 16),
           Text(
             'Add some products to get started!',
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -77,8 +73,11 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartContent(CartProvider cartProvider,
-      ProductProvider productProvider, ThemeData theme) {
+  Widget _buildCartContent(
+    CartProvider cartProvider,
+    ProductProvider productProvider,
+    ThemeData theme,
+  ) {
     return Column(
       children: [
         // Cart items list
@@ -98,8 +97,12 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildCartItem(CartItem item, CartProvider cartProvider,
-      ProductProvider productProvider, ThemeData theme) {
+  Widget _buildCartItem(
+    CartItem item,
+    CartProvider cartProvider,
+    ProductProvider productProvider,
+    ThemeData theme,
+  ) {
     // Find the product to get stock information
     final product = productProvider.products.firstWhere(
       (p) => p.productId == item.productId,
@@ -131,7 +134,7 @@ class _CartScreenState extends State<CartScreen> {
                   borderRadius: BorderRadius.circular(8),
                   child: item.imageUrl != null
                       ? Image.network(
-                          'http://localhost:2322/images/${item.imageUrl}',
+                          _apiClient.getImageUrl(item.imageUrl),
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
@@ -143,8 +146,10 @@ class _CartScreenState extends State<CartScreen> {
                                 color: Colors.grey[300],
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child:
-                                  const Icon(Icons.image, color: Colors.grey),
+                              child: const Icon(
+                                Icons.image,
+                                color: Colors.grey,
+                              ),
                             );
                           },
                         )
@@ -209,8 +214,10 @@ class _CartScreenState extends State<CartScreen> {
                 // Stock status
                 if (item.quantity >= product.stockQuantity)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.red[50],
                       borderRadius: BorderRadius.circular(12),
@@ -372,8 +379,10 @@ class _CartScreenState extends State<CartScreen> {
                         }
                       : null,
                   icon: const Icon(Icons.shopping_cart_checkout),
-                  label:
-                      Text('Proceed to Checkout', style: GoogleFonts.poppins()),
+                  label: Text(
+                    'Proceed to Checkout',
+                    style: GoogleFonts.poppins(),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.colorScheme.primary,
                     foregroundColor: Colors.white,
@@ -395,8 +404,10 @@ class _CartScreenState extends State<CartScreen> {
     if (cartProvider.items.isEmpty) return false;
 
     // Check if any item has stock issues
-    final productProvider =
-        Provider.of<ProductProvider>(context, listen: false);
+    final productProvider = Provider.of<ProductProvider>(
+      context,
+      listen: false,
+    );
     for (final item in cartProvider.items) {
       final product = productProvider.products.firstWhere(
         (p) => p.productId == item.productId,
@@ -424,11 +435,14 @@ class _CartScreenState extends State<CartScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Remove Item',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Remove Item',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
         content: Text(
-            'Are you sure you want to remove ${item.name} from your cart?',
-            style: GoogleFonts.poppins()),
+          'Are you sure you want to remove ${item.name} from your cart?',
+          style: GoogleFonts.poppins(),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),

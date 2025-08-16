@@ -10,7 +10,7 @@ class ApiClient {
   factory ApiClient() => _instance;
 
   // String get baseUrl => 'http://localhost:2322';
-  String get baseUrl => 'http://localhost:2322';
+  String get baseUrl => 'https://giftsystjust.up.railway.app';
 
   ApiClient._internal() {
     _dio = Dio(
@@ -28,6 +28,14 @@ class ApiClient {
         LogInterceptor(requestBody: true, responseBody: true),
       );
     }
+  }
+
+  // Get image URL for a given image filename
+  String getImageUrl(String? imageFilename) {
+    if (imageFilename == null || imageFilename.isEmpty) {
+      return '';
+    }
+    return '$baseUrl/images/$imageFilename';
   }
 
   void setToken(String token) {

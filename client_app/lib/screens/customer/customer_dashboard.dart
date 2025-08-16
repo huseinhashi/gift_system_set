@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/customer_app_bar.dart';
+import '../../services/api_client.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'tabs/orders_tab.dart';
 import 'tabs/payments_tab.dart';
@@ -21,6 +22,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   String _selectedCategory = 'all';
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  final ApiClient _apiClient = ApiClient();
 
   @override
   void initState() {
@@ -105,11 +107,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Colors.grey[400],
-                ),
+                Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
                   'Error loading products',
@@ -121,9 +119,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 const SizedBox(height: 8),
                 Text(
                   productProvider.error!,
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
-                  ),
+                  style: GoogleFonts.poppins(color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
@@ -157,9 +153,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'Check back later for new products!',
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
-                  ),
+                  style: GoogleFonts.poppins(color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -181,8 +175,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                     gradient: LinearGradient(
                       colors: [
                         Theme.of(context).colorScheme.primary,
-                        Color.lerp(Theme.of(context).colorScheme.primary,
-                            Colors.black, 0.3)!,
+                        Color.lerp(
+                          Theme.of(context).colorScheme.primary,
+                          Colors.black,
+                          0.3,
+                        )!,
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -309,9 +306,12 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       _buildCategoryChip('all', 'All Products'),
-                      ...productProvider.categories.map((category) =>
-                          _buildCategoryChip(
-                              category, _getCategoryDisplayName(category))),
+                      ...productProvider.categories.map(
+                        (category) => _buildCategoryChip(
+                          category,
+                          _getCategoryDisplayName(category),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -342,9 +342,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Show message if no products match search
-                if (_getFilteredProducts(productProvider.products).isEmpty && 
+                if (_getFilteredProducts(productProvider.products).isEmpty &&
                     (_searchQuery.isNotEmpty || _selectedCategory != 'all'))
                   Center(
                     child: Column(
@@ -367,9 +367,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                           _searchQuery.isNotEmpty
                               ? 'Try adjusting your search terms'
                               : 'Try selecting a different category',
-                          style: GoogleFonts.poppins(
-                            color: Colors.grey[600],
-                          ),
+                          style: GoogleFonts.poppins(color: Colors.grey[600]),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -379,17 +377,20 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.75,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount:
-                        _getFilteredProducts(productProvider.products).length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.75,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                    itemCount: _getFilteredProducts(
+                      productProvider.products,
+                    ).length,
                     itemBuilder: (context, index) {
-                      final product =
-                          _getFilteredProducts(productProvider.products)[index];
+                      final product = _getFilteredProducts(
+                        productProvider.products,
+                      )[index];
                       return _buildProductCard(product);
                     },
                   ),
@@ -414,10 +415,12 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     // Filter by search query
     if (_searchQuery.isNotEmpty) {
       filteredProducts = filteredProducts
-          .where((product) =>
-              product.name.toLowerCase().contains(_searchQuery) ||
-              product.description.toLowerCase().contains(_searchQuery) ||
-              product.category.toLowerCase().contains(_searchQuery))
+          .where(
+            (product) =>
+                product.name.toLowerCase().contains(_searchQuery) ||
+                product.description.toLowerCase().contains(_searchQuery) ||
+                product.category.toLowerCase().contains(_searchQuery),
+          )
           .toList();
     }
 
@@ -455,9 +458,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   Widget _buildProductCard(Product product) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () {
           Navigator.pushNamed(
@@ -472,11 +473,12 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
           children: [
             Expanded(
               child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
                 child: product.imageUrl != null
                     ? Image.network(
-                        'http://localhost:2322/images/${product.imageUrl}',
+                        _apiClient.getImageUrl(product.imageUrl),
                         width: double.infinity,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
@@ -558,8 +560,10 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       onPressed: product.stockQuantity > 0
                           ? () {
                               // Add to cart functionality
-                              Provider.of<CartProvider>(context, listen: false)
-                                  .addItem(
+                              Provider.of<CartProvider>(
+                                context,
+                                listen: false,
+                              ).addItem(
                                 productId: product.productId,
                                 name: product.name,
                                 description: product.description,
@@ -569,8 +573,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content:
-                                      Text('${product.name} added to cart'),
+                                  content: Text(
+                                    '${product.name} added to cart',
+                                  ),
                                   backgroundColor: Colors.green,
                                 ),
                               );
@@ -632,11 +637,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   CircleAvatar(
                     radius: 40,
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.white,
-                    ),
+                    child: Icon(Icons.person, size: 40, color: Colors.white),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -649,17 +650,13 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   const SizedBox(height: 8),
                   Text(
                     userData?['phone'] ?? '',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                    ),
+                    style: GoogleFonts.poppins(color: Colors.grey[600]),
                   ),
                   if (userData?['address'] != null) ...[
                     const SizedBox(height: 8),
                     Text(
                       userData!['address'],
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey[600],
-                      ),
+                      style: GoogleFonts.poppins(color: Colors.grey[600]),
                       textAlign: TextAlign.center,
                     ),
                   ],

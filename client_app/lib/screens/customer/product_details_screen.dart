@@ -3,15 +3,14 @@ import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/customer_app_bar.dart';
+import '../../services/api_client.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final int productId;
 
-  const ProductDetailsScreen({
-    Key? key,
-    required this.productId,
-  }) : super(key: key);
+  const ProductDetailsScreen({Key? key, required this.productId})
+    : super(key: key);
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -19,23 +18,23 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int _quantity = 1;
+  final ApiClient _apiClient = ApiClient();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProductProvider>(context, listen: false)
-          .fetchProductById(widget.productId);
+      Provider.of<ProductProvider>(
+        context,
+        listen: false,
+      ).fetchProductById(widget.productId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomerAppBar(
-        title: 'Product Details',
-        showCart: true,
-      ),
+      appBar: CustomerAppBar(title: 'Product Details', showCart: true),
       body: Consumer<ProductProvider>(
         builder: (context, productProvider, child) {
           if (productProvider.isLoading) {
@@ -86,7 +85,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   aspectRatio: 1,
                   child: product.imageUrl != null
                       ? Image.network(
-                          'http://localhost:2322/images/${product.imageUrl}',
+                          _apiClient.getImageUrl(product.imageUrl),
                           width: double.infinity,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
@@ -118,12 +117,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.1),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
@@ -192,8 +192,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           IconButton(
                             onPressed:
                                 product.stockQuantity > 0 && _quantity > 1
-                                    ? () => setState(() => _quantity--)
-                                    : null,
+                                ? () => setState(() => _quantity--)
+                                : null,
                             icon: const Icon(Icons.remove),
                             style: IconButton.styleFrom(
                               backgroundColor: Colors.grey[200],
@@ -209,7 +209,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                           const SizedBox(width: 16),
                           IconButton(
-                            onPressed: product.stockQuantity > 0 &&
+                            onPressed:
+                                product.stockQuantity > 0 &&
                                     _quantity < product.stockQuantity
                                 ? () => setState(() => _quantity++)
                                 : null,
@@ -236,9 +237,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               ? () {
                                   final cartProvider =
                                       Provider.of<CartProvider>(
-                                    context,
-                                    listen: false,
-                                  );
+                                        context,
+                                        listen: false,
+                                      );
                                   cartProvider.addItem(
                                     productId: product.productId,
                                     name: product.name,
@@ -250,8 +251,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content:
-                                          Text('${product.name} added to cart'),
+                                      content: Text(
+                                        '${product.name} added to cart',
+                                      ),
                                       backgroundColor: Colors.green,
                                       action: SnackBarAction(
                                         label: 'View Cart',
@@ -265,8 +267,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 }
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -327,11 +330,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return Container(
       width: double.infinity,
       color: Colors.grey[300],
-      child: const Icon(
-        Icons.image,
-        size: 64,
-        color: Colors.grey,
-      ),
+      child: const Icon(Icons.image, size: 64, color: Colors.grey),
     );
   }
 
