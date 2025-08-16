@@ -491,6 +491,158 @@ export const createOrderWithItems = async (req, res, next) => {
   }
 };
 
+// Create order with payment processing (transactional)
+export const createOrderWithPayment = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const { order, items, payment } = req.body;
+    console.log(req.body);
+    
+    // Determine customer_id based on authentication type
+    let customerId;
+    if (req.admin) {
+      // Admin/staff creating order for a customer
+      customerId = order.customer_id;
+    } else if (req.customer) {
+      // Customer creating their own order
+      customerId = req.customer.id;
+      // Override any customer_id in the request for security
+      order.customer_id = customerId;
+    } else {
+      throw new Error("Authentication required");
+    }
+
+    // Validate order (no status, total_amount, payment_status)
+    const validatedOrder = orderSchema.parse(order);
+    // Validate items (no price)
+    if (!Array.isArray(items) || items.length === 0) {
+      throw new Error("Order must have at least one item");
+    }
+    const validatedItems = items.map((item) =>
+      orderItemSchema.omit({ order_id: true }).parse(item)
+    );
+    
+    // Check customer existence
+    const customer = await Customer.findByPk(customerId);
+    if (!customer) {
+      await t.rollback();
+      return res.status(400).json({
+        success: false,
+        message: `Customer not found: ${customerId}`,
+      });
+    }
+    
+    // Calculate total and create order
+    let totalAmount = 0;
+    const orderItemsToCreate = [];
+    for (const item of validatedItems) {
+      const product = await Product.findByPk(item.product_id, {
+        transaction: t,
+        lock: t.LOCK.UPDATE,
+      });
+      if (!product) {
+        throw new Error(`Product not found: ${item.product_id}`);
+      }
+      if (item.quantity > product.stock_quantity) {
+        throw new Error(
+          `Requested quantity (${item.quantity}) exceeds available stock (${product.stock_quantity}) for product ${product.name}`
+        );
+      }
+
+      await product.update(
+        { stock_quantity: product.stock_quantity - item.quantity },
+        { transaction: t }
+      );
+
+      const itemTotal = Number(product.price) * item.quantity;
+      totalAmount += itemTotal;
+      orderItemsToCreate.push({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: product.price,
+      });
+    }
+    
+    // Set order fields
+    const newOrder = await Order.create(
+      {
+        ...validatedOrder,
+        total_amount: totalAmount,
+        status: "pending",
+        payment_status: "pending",
+      },
+      { transaction: t }
+    );
+    
+    // Create order items
+    for (const item of orderItemsToCreate) {
+      await OrderItem.create(
+        { ...item, order_id: newOrder.order_id },
+        { transaction: t }
+      );
+    }
+
+    // Process payment if provided
+    if (payment && payment.phone) {
+      const { Pay } = await import("../services/pay.js");
+      const paymentResult = await Pay(payment.phone, totalAmount, newOrder.order_id);
+      
+      if (paymentResult.success) {
+        // Payment successful - update order status
+        await newOrder.update({
+          status: "confirmed",
+          payment_status: "paid",
+        }, { transaction: t });
+        
+        // Create payment record
+        await Payment.create({
+          order_id: newOrder.order_id,
+          payment_type: "api",
+          transaction_id: paymentResult.referenceId,
+          amount: totalAmount,
+        }, { transaction: t });
+        
+        await t.commit();
+        
+        // Fetch order with items to return
+        const createdOrder = await Order.findByPk(newOrder.order_id, {
+          include: [OrderItem, Payment],
+        });
+        
+        return res.status(201).json({ 
+          success: true, 
+          message: "Order created and payment successful",
+          data: createdOrder 
+        });
+      } else {
+        // Payment failed - rollback everything (order and stock)
+        await t.rollback();
+        return res.status(400).json({
+          success: false,
+          message: paymentResult.message || "Payment processing failed. Order was not created.",
+        });
+      }
+    } else {
+      // No payment processing - just create order
+      await t.commit();
+      
+      // Fetch order with items to return
+      const createdOrder = await Order.findByPk(newOrder.order_id, {
+        include: [OrderItem],
+      });
+      
+      return res.status(201).json({ 
+        success: true, 
+        message: "Order created successfully",
+        data: createdOrder 
+      });
+    }
+  } catch (error) {
+    await t.rollback();
+    next(error);
+  }
+};
+
 // Get all orders for the logged-in customer
 export const getCustomerOrders = async (req, res, next) => {
   try {

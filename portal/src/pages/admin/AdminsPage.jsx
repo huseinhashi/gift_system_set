@@ -10,10 +10,32 @@ import { z } from "zod";
 
 // Inline adminSchema for frontend validation
 const adminSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name cannot exceed 100 characters"),
-  email: z.string().email("Please enter a valid email address").optional().or(z.literal("")),
-  phone: z.string().optional(),
-  wallet_address: z.string().min(42, "Wallet address must be 42 characters").max(42, "Wallet address must be 42 characters"),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name cannot exceed 100 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces")
+    .refine((val) => !/^\d/.test(val), "Name cannot start with a number")
+    .refine((val) => !/^\s/.test(val), "Name cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Name cannot end with a space")
+    .refine((val) => !/\s{2,}/.test(val), "Name cannot contain consecutive spaces"),
+  email: z.string()
+    .email("Please enter a valid email address")
+    .optional()
+    .or(z.literal(""))
+    .refine((val) => !val || val.length <= 255, "Email cannot exceed 255 characters")
+    .refine((val) => !val || !/^\s/.test(val), "Email cannot start with a space")
+    .refine((val) => !val || !/\s$/.test(val), "Email cannot end with a space"),
+  phone: z.string()
+    .optional()
+    .refine((val) => !val || /^[\d\s\-\+\(\)]+$/.test(val), "Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses")
+    .refine((val) => !val || val.length >= 7, "Phone number must be at least 7 characters")
+    .refine((val) => !val || val.length <= 20, "Phone number cannot exceed 20 characters"),
+  wallet_address: z.string()
+    .min(42, "Wallet address must be exactly 42 characters")
+    .max(42, "Wallet address must be exactly 42 characters")
+    .regex(/^0x[a-fA-F0-9]{40}$/, "Wallet address must be a valid Ethereum address starting with 0x")
+    .refine((val) => !/^\s/.test(val), "Wallet address cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Wallet address cannot end with a space"),
   role: z.enum(["admin", "staff"]).default("staff"),
   is_active: z.boolean().optional(),
 });

@@ -11,10 +11,29 @@ import { z } from "zod";
 
 // Inline customerSchema for frontend validation
 const customerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name cannot exceed 100 characters"),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  password_hash: z.string().min(6, "Password must be at least 6 characters").max(100, "Password cannot exceed 100 characters"),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name cannot exceed 100 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces")
+    .refine((val) => !/^\d/.test(val), "Name cannot start with a number")
+    .refine((val) => !/^\s/.test(val), "Name cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Name cannot end with a space")
+    .refine((val) => !/\s{2,}/.test(val), "Name cannot contain consecutive spaces"),
+  phone: z.string()
+    .optional()
+    .refine((val) => !val || /^[\d\s\-\+\(\)]+$/.test(val), "Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses")
+    .refine((val) => !val || val.length >= 7, "Phone number must be at least 7 characters")
+    .refine((val) => !val || val.length <= 20, "Phone number cannot exceed 20 characters"),
+  address: z.string()
+    .optional()
+    .refine((val) => !val || val.length <= 500, "Address cannot exceed 500 characters")
+    .refine((val) => !val || !/^\s/.test(val), "Address cannot start with a space")
+    .refine((val) => !val || !/\s$/.test(val), "Address cannot end with a space"),
+  password_hash: z.string()
+    .min(6, "Password must be at least 6 characters")
+    .max(100, "Password cannot exceed 100 characters")
+    .refine((val) => /^(?=.*[a-zA-Z])/.test(val), "Password must contain at least one letter")
+    .refine((val) => /^(?=.*\d)/.test(val), "Password must contain at least one number"),
   is_active: z.boolean().optional(),
 });
 
@@ -190,6 +209,10 @@ export const CustomersPage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                pattern="[a-zA-Z\s]+"
+                title="Name can only contain letters and spaces"
+                maxLength={100}
+                required
               />
               {validationErrors.name && (
                 <p className="text-sm text-destructive">{validationErrors.name}</p>
@@ -202,6 +225,9 @@ export const CustomersPage = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
+                pattern="[\d\s\-\+\(\)]+"
+                title="Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses"
+                maxLength={20}
               />
               {validationErrors.phone && (
                 <p className="text-sm text-destructive">{validationErrors.phone}</p>
@@ -215,6 +241,9 @@ export const CustomersPage = () => {
                 type="password"
                 value={formData.password_hash}
                 onChange={handleInputChange}
+                minLength={6}
+                maxLength={100}
+                required
               />
               {validationErrors.password_hash && (
                 <p className="text-sm text-destructive">{validationErrors.password_hash}</p>
@@ -227,6 +256,7 @@ export const CustomersPage = () => {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
+                maxLength={500}
               />
               {validationErrors.address && (
                 <p className="text-sm text-destructive">{validationErrors.address}</p>
@@ -263,6 +293,10 @@ export const CustomersPage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
+                pattern="[a-zA-Z\s]+"
+                title="Name can only contain letters and spaces"
+                maxLength={100}
+                required
               />
               {validationErrors.name && (
                 <p className="text-sm text-destructive">{validationErrors.name}</p>
@@ -275,6 +309,9 @@ export const CustomersPage = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
+                pattern="[\d\s\-\+\(\)]+"
+                title="Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses"
+                maxLength={20}
               />
               {validationErrors.phone && (
                 <p className="text-sm text-destructive">{validationErrors.phone}</p>
@@ -288,6 +325,8 @@ export const CustomersPage = () => {
                 type="password"
                 value={formData.password_hash}
                 onChange={handleInputChange}
+                minLength={6}
+                maxLength={100}
               />
               {validationErrors.password_hash && (
                 <p className="text-sm text-destructive">{validationErrors.password_hash}</p>
@@ -300,6 +339,7 @@ export const CustomersPage = () => {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
+                maxLength={500}
               />
               {validationErrors.address && (
                 <p className="text-sm text-destructive">{validationErrors.address}</p>

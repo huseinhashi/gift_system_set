@@ -1,4 +1,4 @@
-import { Delivery, Employee, Order, Customer } from "../models/index.js";
+import { Delivery, Employee, Order, Customer, Payment } from "../models/index.js";
 import { Op } from "sequelize";
 
 // List all deliveries (admin/staff only)
@@ -88,6 +88,18 @@ export const createDelivery = async (req, res, next) => {
       return res
         .status(404)
         .json({ success: false, message: "Employee not found" });
+    }
+
+    // Check if payment is recorded or order is paid before allowing delivery
+    const payment = await Payment.findOne({
+      where: { order_id: req.body.order_id }
+    });
+    
+    if (!payment && order.payment_status !== "paid") {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot create delivery. Payment must be recorded or order payment status must be 'paid'.",
+      });
     }
 
     const delivery = await Delivery.create(req.body);

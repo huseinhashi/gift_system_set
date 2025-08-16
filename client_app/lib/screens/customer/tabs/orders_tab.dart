@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../services/customer_order_service.dart';
-import '../../../services/order_service.dart';
 import '../product_details_screen.dart';
 import '../../../providers/auth_provider.dart';
 
@@ -48,8 +47,10 @@ class _OrdersTabState extends State<OrdersTab> {
   List<dynamic> get _filteredOrders {
     if (_filterStatus == 'all') return _orders;
     return _orders
-        .where((order) =>
-            (order['status'] ?? '').toString().toLowerCase() == _filterStatus)
+        .where(
+          (order) =>
+              (order['status'] ?? '').toString().toLowerCase() == _filterStatus,
+        )
         .toList();
   }
 
@@ -125,64 +126,79 @@ class _OrdersTabState extends State<OrdersTab> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _error != null
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.error_outline,
-                                  size: 64, color: Colors.red),
-                              const SizedBox(height: 16),
-                              Text(_error!,
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 16, color: Colors.red)),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: _fetchOrders,
-                                child: const Text('Retry'),
-                              ),
-                            ],
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: Colors.red,
                           ),
-                        ),
-                      )
-                    : _filteredOrders.isEmpty
-                        ? Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.search_off,
-                                      size: 64, color: Colors.grey[400]),
-                                  const SizedBox(height: 16),
-                                  Text('No orders found',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 16,
-                                          color: Colors.grey[600])),
-                                  if (_filterStatus != 'all')
-                                    TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _filterStatus = 'all';
-                                        });
-                                      },
-                                      child: Text('Reset filter',
-                                          style: GoogleFonts.poppins(
-                                              color:
-                                                  theme.colorScheme.primary)),
-                                    ),
-                                ],
+                          const SizedBox(height: 16),
+                          Text(
+                            _error!,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _fetchOrders,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : _filteredOrders.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No orders found',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          if (_filterStatus != 'all')
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _filterStatus = 'all';
+                                });
+                              },
+                              child: Text(
+                                'Reset filter',
+                                style: GoogleFonts.poppins(
+                                  color: theme.colorScheme.primary,
+                                ),
                               ),
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: _filteredOrders.length,
-                            itemBuilder: (context, index) {
-                              final order = _filteredOrders[index];
-                              return _buildOrderCard(order, theme);
-                            },
-                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _filteredOrders.length,
+                    itemBuilder: (context, index) {
+                      final order = _filteredOrders[index];
+                      return _buildOrderCard(order, theme);
+                    },
+                  ),
           ),
         ],
       ),
@@ -216,8 +232,9 @@ class _OrdersTabState extends State<OrdersTab> {
   Widget _buildOrderCard(dynamic order, ThemeData theme) {
     final status = (order['status'] ?? 'pending').toString().toLowerCase();
     final createdAt = order['created_at'] ?? order['createdAt'] ?? '';
-    final total =
-        _parseAmount(order['total_amount'] ?? order['totalAmount'] ?? 0);
+    final total = _parseAmount(
+      order['total_amount'] ?? order['totalAmount'] ?? 0,
+    );
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -228,22 +245,33 @@ class _OrdersTabState extends State<OrdersTab> {
           backgroundColor: _getStatusColor(status),
           child: Icon(Icons.shopping_bag, color: Colors.white),
         ),
-        title: Text('Order #${order['order_id'] ?? order['id']}',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Order #${order['order_id'] ?? order['id']}',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Status: ${_capitalize(status)}',
-                style: GoogleFonts.poppins(color: _getStatusColor(status))),
+            Text(
+              'Status: ${_capitalize(status)}',
+              style: GoogleFonts.poppins(color: _getStatusColor(status)),
+            ),
             if (createdAt != null && createdAt.toString().isNotEmpty)
-              Text('Date: ${createdAt.toString().substring(0, 10)}',
-                  style: GoogleFonts.poppins(fontSize: 12)),
-            Text('Total: \$${total.toStringAsFixed(2)}',
-                style: GoogleFonts.poppins(fontSize: 12)),
+              Text(
+                'Date: ${createdAt.toString().substring(0, 10)}',
+                style: GoogleFonts.poppins(fontSize: 12),
+              ),
+            Text(
+              'Total: \$${total.toStringAsFixed(2)}',
+              style: GoogleFonts.poppins(fontSize: 12),
+            ),
           ],
         ),
-        trailing: Icon(Icons.arrow_forward_ios,
-            size: 18, color: theme.colorScheme.primary),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+          color: theme.colorScheme.primary,
+        ),
         onTap: () {
           Navigator.push(
             context,
@@ -323,37 +351,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       _paySuccess = null;
     });
     try {
-      final orderId = widget.order['order_id'] ?? widget.order['id'];
-      final total = _parseAmount(
-          widget.order['total_amount'] ?? widget.order['totalAmount'] ?? 0);
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final customerPhone = authProvider.userData?['phone'] ?? '';
-
-      // Validate required fields
-      if (customerPhone.isEmpty) {
-        setState(() {
-          _payError =
-              'Customer phone number is required for payment processing.';
-        });
-        return;
-      }
-
-      final result = await OrderService.processPayment(
-        orderId: orderId,
-        amount: total,
-        customerPhone: customerPhone,
-      );
-      if (result['success']) {
-        setState(() {
-          _paySuccess = 'Payment successful!';
-        });
-        // Refresh order details after payment
-        await _loadOrderDetails();
-      } else {
-        setState(() {
-          _payError = result['message'] ?? 'Payment failed.';
-        });
-      }
+      // Since payments are now processed during order creation,
+      // we can't process payments separately anymore
+      setState(() {
+        _payError =
+            'Payments are processed automatically during order creation.';
+      });
     } catch (e) {
       setState(() {
         _payError = 'Payment error: $e';
@@ -371,18 +374,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     final orderItems = order['OrderItems'] ?? [];
     final delivery = order['Delivery'];
     final payments = order['Payments'] ?? [];
-    final paymentStatus =
-        (order['payment_status'] ?? '').toString().toLowerCase();
+    final paymentStatus = (order['payment_status'] ?? '')
+        .toString()
+        .toLowerCase();
     final status = (order['status'] ?? '').toString().toLowerCase();
-    final total =
-        _parseAmount(order['total_amount'] ?? order['totalAmount'] ?? 0);
+    final total = _parseAmount(
+      order['total_amount'] ?? order['totalAmount'] ?? 0,
+    );
     final customer = order['customer'] ?? {};
     final employee = delivery != null ? delivery['employee'] : null;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order #${order['order_id'] ?? order['id']}',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Order #${order['order_id'] ?? order['id']}',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
@@ -407,16 +414,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Order Summary',
-                                  style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18)),
+                              Text(
+                                'Order Summary',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
-                                  color:
-                                      _getStatusColor(status).withOpacity(0.1),
+                                  color: _getStatusColor(
+                                    status,
+                                  ).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -430,18 +443,23 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _buildInfoRow('Order ID',
-                              '#${order['order_id'] ?? order['id']}'),
                           _buildInfoRow(
-                              'Date',
-                              order['created_at']
-                                      ?.toString()
-                                      .substring(0, 10) ??
-                                  'N/A'),
+                            'Order ID',
+                            '#${order['order_id'] ?? order['id']}',
+                          ),
                           _buildInfoRow(
-                              'Total Amount', '\$${total.toStringAsFixed(2)}'),
+                            'Date',
+                            order['created_at']?.toString().substring(0, 10) ??
+                                'N/A',
+                          ),
                           _buildInfoRow(
-                              'Payment Status', paymentStatus.toUpperCase()),
+                            'Total Amount',
+                            '\$${total.toStringAsFixed(2)}',
+                          ),
+                          _buildInfoRow(
+                            'Payment Status',
+                            paymentStatus.toUpperCase(),
+                          ),
                         ],
                       ),
                     ),
@@ -449,9 +467,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   const SizedBox(height: 16),
 
                   // Order Items
-                  Text('Order Items',
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold, fontSize: 18)),
+                  Text(
+                    'Order Items',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   ...orderItems.map<Widget>((item) {
                     final product = item['Product'] ?? {};
@@ -468,12 +490,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) =>
                                       Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.grey[200],
-                                    child:
-                                        Icon(Icons.image, color: Colors.grey),
-                                  ),
+                                        width: 60,
+                                        height: 60,
+                                        color: Colors.grey[200],
+                                        child: Icon(
+                                          Icons.image,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
                                 ),
                               )
                             : Container(
@@ -482,21 +506,27 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 color: Colors.grey[200],
                                 child: Icon(Icons.image, color: Colors.grey),
                               ),
-                        title: Text(product['name'] ?? 'Product',
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500)),
+                        title: Text(
+                          product['name'] ?? 'Product',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Quantity: ${item['quantity']}'),
                             Text(
-                                'Price: \$${_parseAmount(item['price']).toStringAsFixed(2)}'),
+                              'Price: \$${_parseAmount(item['price']).toStringAsFixed(2)}',
+                            ),
                           ],
                         ),
                         trailing: Text(
-                            '\$${(_parseAmount(item['price']) * (item['quantity'] ?? 1)).toStringAsFixed(2)}',
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold)),
+                          '\$${(_parseAmount(item['price']) * (item['quantity'] ?? 1)).toStringAsFixed(2)}',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -515,9 +545,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                   // Payment Information
                   if (payments.isNotEmpty) ...[
-                    Text('Payment Information',
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                    Text(
+                      'Payment Information',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Card(
                       child: Padding(
@@ -527,18 +561,25 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildInfoRow('Payment Type',
-                                    payment['payment_type'] ?? 'N/A'),
-                                _buildInfoRow('Transaction ID',
-                                    payment['transaction_id'] ?? 'N/A'),
-                                _buildInfoRow('Amount',
-                                    '\$${_parseAmount(payment['amount']).toStringAsFixed(2)}'),
                                 _buildInfoRow(
-                                    'Date',
-                                    payment['transaction_date']
-                                            ?.toString()
-                                            .substring(0, 10) ??
-                                        'N/A'),
+                                  'Payment Type',
+                                  payment['payment_type'] ?? 'N/A',
+                                ),
+                                _buildInfoRow(
+                                  'Transaction ID',
+                                  payment['transaction_id'] ?? 'N/A',
+                                ),
+                                _buildInfoRow(
+                                  'Amount',
+                                  '\$${_parseAmount(payment['amount']).toStringAsFixed(2)}',
+                                ),
+                                _buildInfoRow(
+                                  'Date',
+                                  payment['transaction_date']
+                                          ?.toString()
+                                          .substring(0, 10) ??
+                                      'N/A',
+                                ),
                                 if (payments.indexOf(payment) <
                                     payments.length - 1)
                                   const Divider(),
@@ -553,9 +594,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                   // Delivery Information
                   if (delivery != null) ...[
-                    Text('Delivery Information',
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                    Text(
+                      'Delivery Information',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Card(
                       child: Padding(
@@ -564,24 +609,35 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildInfoRow(
-                                'Status', delivery['delivery_status'] ?? 'N/A'),
+                              'Status',
+                              delivery['delivery_status'] ?? 'N/A',
+                            ),
                             if (delivery['delivery_notes'] != null)
                               _buildInfoRow(
-                                  'Notes', delivery['delivery_notes']),
+                                'Notes',
+                                delivery['delivery_notes'],
+                              ),
                             if (delivery['scheduled_date'] != null)
                               _buildInfoRow(
-                                  'Scheduled Date', delivery['scheduled_date']),
+                                'Scheduled Date',
+                                delivery['scheduled_date'],
+                              ),
                             if (delivery['delivered_at'] != null)
                               _buildInfoRow(
-                                  'Delivered At',
-                                  delivery['delivered_at']
-                                      .toString()
-                                      .substring(0, 10)),
+                                'Delivered At',
+                                delivery['delivered_at'].toString().substring(
+                                  0,
+                                  10,
+                                ),
+                              ),
                             if (delivery['Employee'] != null) ...[
                               const SizedBox(height: 8),
-                              Text('Assigned Employee:',
-                                  style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500)),
+                              Text(
+                                'Assigned Employee:',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                               Card(
                                 color: Colors.blue.withOpacity(0.1),
                                 child: Padding(
@@ -592,24 +648,30 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         contentPadding: EdgeInsets.zero,
                                         leading: CircleAvatar(
                                           backgroundColor: Colors.blue,
-                                          child: Icon(Icons.person,
-                                              color: Colors.white),
+                                          child: Icon(
+                                            Icons.person,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                         title: Text(
-                                            delivery['Employee']['name'] ??
-                                                'N/A',
-                                            style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w600)),
-                                        subtitle: Text(delivery['Employee']
-                                                ['phone'] ??
-                                            ''),
+                                          delivery['Employee']['name'] ?? 'N/A',
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          delivery['Employee']['phone'] ?? '',
+                                        ),
                                         trailing: IconButton(
                                           onPressed: () {
                                             _makePhoneCall(
-                                                delivery['Employee']['phone']);
+                                              delivery['Employee']['phone'],
+                                            );
                                           },
-                                          icon: Icon(Icons.phone,
-                                              color: Colors.green),
+                                          icon: Icon(
+                                            Icons.phone,
+                                            color: Colors.green,
+                                          ),
                                           tooltip:
                                               'Call ${delivery['Employee']['name']}',
                                         ),
@@ -619,18 +681,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                           width: double.infinity,
                                           child: ElevatedButton.icon(
                                             onPressed: () => _makePhoneCall(
-                                                delivery['Employee']['phone']),
+                                              delivery['Employee']['phone'],
+                                            ),
                                             icon: Icon(Icons.phone, size: 16),
                                             label: Text(
-                                                'Call ${delivery['Employee']['name'] ?? 'Employee'}',
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 12)),
+                                              'Call ${delivery['Employee']['name'] ?? 'Employee'}',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 12,
+                                              ),
+                                            ),
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.green,
                                               foregroundColor: Colors.white,
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 8),
+                                                    vertical: 8,
+                                                  ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
@@ -650,55 +716,36 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     const SizedBox(height: 16),
                   ],
 
-                  // Payment Button
+                  // Payment Information Note
                   if (paymentStatus != 'paid') ...[
-                    if (_payError != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red),
-                        ),
-                        child: Text(_payError!,
-                            style: GoogleFonts.poppins(color: Colors.red)),
-                      ),
-                    if (_paySuccess != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.green),
-                        ),
-                        child: Text(_paySuccess!,
-                            style: GoogleFonts.poppins(color: Colors.green)),
-                      ),
-                    SizedBox(
+                    Container(
                       width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _isPaying ? null : _processPayment,
-                        icon: _isPaying
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.white))
-                            : const Icon(Icons.payment),
-                        label: Text(_isPaying ? 'Processing...' : 'Pay Now',
-                            style: GoogleFonts.poppins()),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Payment Information',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[700],
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Payments are processed automatically when orders are created. If this order is unpaid, you may need to contact support.',
+                            style: GoogleFonts.poppins(
+                              color: Colors.blue[700],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -714,9 +761,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: GoogleFonts.poppins(
-                  color: Colors.grey[600], fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         ],
       ),

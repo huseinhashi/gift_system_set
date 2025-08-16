@@ -1,6 +1,48 @@
-import { Payment, Order, Customer } from "../models/index.js";
+import { Payment, Order, Customer, OrderItem, Product, sequelize } from "../models/index.js";
 import { paymentSchema } from "../validators/validator.js";
 import { Pay } from "../services/pay.js";
+
+// Helper function to delete order and restore stock when payment fails
+const deleteOrderAndRestoreStock = async (orderId) => {
+  const t = await sequelize.transaction();
+  try {
+    // Get order items to restore stock
+    const orderItems = await OrderItem.findAll({
+      where: { order_id: orderId },
+      include: [Product],
+      transaction: t,
+    });
+
+    // Restore stock for each product
+    for (const item of orderItems) {
+      await item.Product.update(
+        { 
+          stock_quantity: item.Product.stock_quantity + item.quantity 
+        },
+        { transaction: t }
+      );
+    }
+
+    // Delete order items
+    await OrderItem.destroy({
+      where: { order_id: orderId },
+      transaction: t,
+    });
+
+    // Delete the order
+    await Order.destroy({
+      where: { order_id: orderId },
+      transaction: t,
+    });
+
+    await t.commit();
+    return true;
+  } catch (error) {
+    await t.rollback();
+    console.error("Error deleting order and restoring stock:", error);
+    throw error;
+  }
+};
 
 // List all payments (admin/staff only)
 export const getAllPayments = async (req, res, next) => {
@@ -241,6 +283,27 @@ export const processPayment = async (req, res, next) => {
     let payment = await Payment.findOne({ where: { order_id: orderId } });
     const orderAmount = Number(order.total_amount);
 
+    // Helper function to handle payment failure
+    const handlePaymentFailure = async (paymentResult) => {
+      try {
+        await deleteOrderAndRestoreStock(orderId);
+        return res.json({
+          success: false,
+          message: paymentResult.message || "Payment processing failed. Order has been cancelled.",
+          data: { order: null },
+        });
+      } catch (deleteError) {
+        console.error("Failed to delete order after payment failure:", deleteError);
+        // If deletion fails, just mark payment as failed
+        await order.update({ payment_status: "failed" });
+        return res.json({
+          success: false,
+          message: paymentResult.message || "Payment processing failed",
+          data: { order },
+        });
+      }
+    };
+
     if (
       payment &&
       Number(payment.amount) == orderAmount &&
@@ -268,12 +331,7 @@ export const processPayment = async (req, res, next) => {
           },
         });
       } else {
-        await order.update({ payment_status: "failed" });
-        return res.json({
-          success: false,
-          message: paymentResult.message || "Payment processing failed",
-          data: { order },
-        });
+        return await handlePaymentFailure(paymentResult);
       }
     } else if (payment && order.payment_status === "paid") {
       // Already paid
@@ -305,12 +363,7 @@ export const processPayment = async (req, res, next) => {
           },
         });
       } else {
-        await order.update({ payment_status: "failed" });
-        return res.json({
-          success: false,
-          message: paymentResult.message || "Payment processing failed",
-          data: { order },
-        });
+        return await handlePaymentFailure(paymentResult);
       }
     } else {
       // Fallback: payment exists but status is not clear

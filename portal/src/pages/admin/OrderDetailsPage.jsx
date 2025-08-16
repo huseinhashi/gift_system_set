@@ -101,6 +101,20 @@ export function OrderDetailsPage() {
   // Helpers
   const canEdit = order && ["pending", "returned"].includes(order.status);
   const orderTotal = orderItems.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
+  
+  // Check if delivery can be created (payment must be recorded or paid)
+  const canCreateDelivery = order && (
+    order.payment_status === "paid" || 
+    payments.length > 0
+  );
+  
+  // Get delivery eligibility message
+  const getDeliveryEligibilityMessage = () => {
+    if (!order) return "";
+    if (order.payment_status === "paid") return "Payment confirmed - delivery can be scheduled";
+    if (payments.length > 0) return "Payment recorded - delivery can be scheduled";
+    return "Payment required before delivery can be scheduled";
+  };
 
   // Handle view dialog
   const handleView = (item) => setViewItem(item);
@@ -210,6 +224,16 @@ export function OrderDetailsPage() {
 
   // Delivery handlers
   const handleDeliveryDialog = (delivery = null) => {
+    // Check if delivery can be created
+    if (!delivery && !canCreateDelivery) {
+      toast({
+        title: "Payment Required",
+        description: "Payment must be recorded or paid before creating delivery",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setEditingDelivery(delivery);
     if (delivery) {
       setDeliveryForm({
@@ -301,7 +325,19 @@ export function OrderDetailsPage() {
             </div>
             <div>
               <Label>Payment Status</Label>
-              <div className="mt-1">{order.payment_status}</div>
+              <div className="mt-1 flex items-center gap-2">
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  order.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
+                  order.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                  order.payment_status === 'failed' ? 'bg-red-100 text-red-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {order.payment_status}
+                </span>
+                {payments.length > 0 && (
+                  <span className="text-xs text-blue-600">({payments.length} payment record{payments.length > 1 ? 's' : ''})</span>
+                )}
+              </div>
             </div>
             <div>
               <Label>Delivery Status</Label>
@@ -390,13 +426,33 @@ export function OrderDetailsPage() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Deliveries</CardTitle>
-            <CardDescription>Delivery information for this order</CardDescription>
+            <CardDescription>
+              {getDeliveryEligibilityMessage()}
+            </CardDescription>
           </div>
-          <Button onClick={() => handleDeliveryDialog()}>
+          <Button 
+            onClick={() => handleDeliveryDialog()} 
+            disabled={!canCreateDelivery}
+            title={!canCreateDelivery ? "Payment must be recorded or paid before creating delivery" : ""}
+          >
             <Plus className="mr-2 h-4 w-4" />Add Delivery
           </Button>
         </CardHeader>
         <CardContent>
+          {!canCreateDelivery && (
+            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center gap-2 text-yellow-800">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium">Payment Required</span>
+              </div>
+              <p className="mt-1 text-sm text-yellow-700">
+                A payment record must be created or the payment status must be "paid" before delivery can be scheduled.
+              </p>
+            </div>
+          )}
+          
           {deliveries.length > 0 ? (
             <Table>
               <TableHeader>
@@ -437,7 +493,9 @@ export function OrderDetailsPage() {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center py-8 text-muted-foreground">No deliveries found</div>
+            <div className="text-center py-8 text-muted-foreground">
+              {canCreateDelivery ? "No deliveries found" : "No deliveries available - payment required first"}
+            </div>
           )}
         </CardContent>
       </Card>

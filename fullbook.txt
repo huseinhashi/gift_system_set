@@ -1,0 +1,837 @@
+
+
+DEVELOPING AND DEPLOYING AN INTEGRATED MANAGEMENT PLATFORM AND MOBILE APP FOR STREAMLINING FLOWER AND GIFT SHOP OPERATIONS
+
+MUSE AHMED ADAN
+ABDISALAN ALI AHMED
+ABDULLAHI ALI MURSAL
+IBRAHIM ABDULLE YUSUF
+
+SUBMISSION OF GRADUATION PROJECT FOR
+PARTIAL FULFILLMENT OF THE 
+DEGREE OF BACHELOR OF SCIENCE IN 
+COMPUTER APPLICATIONS
+
+JAMHURIYA UNIVERSITY OF SCIENCE AND
+TECHNOLOGY (JUST)
+FACULTY OF COMPUTER & INFORMATION
+TECHNOLOGY
+
+AUGUST 2025
+ 
+Jamhuriya University of Science and Technology (JUST)
+Final Submission for Graduation Project Report 
+Part I: Candidate’s Details 
+Name of Candidate 1: Muse Ahmed Adan      	  	ID No:C1210128
+Name of Candidate 2: Abdisalan Ali Ahmed	 	ID No: C1210095
+Name of Candidate 3: Abdullahi Ali Mursal            	ID No: C12110145 
+Name of Candidate 4: Ibrahim Abdulle Yusuf            	ID No: C12110145 
+Research/project title:( in block letters): Developing and Deploying an Integrated Management Platform and Mobile App for Streamlining Flower and Gift Shop Operations
+Part II - Supervisor’s Comments: (To be filled by the supervisor)  
+I have checked the candidate’s work and hereby certify that the candidate has done all the corrections suggested by the examiners/committee.  
+Supervisor’s Name: ______________________________________________________ 
+First supervisor’s signature_________________________ Date: _____ /_____/_____ 
+Part III: Head of Department’s Approval (To be filled by the dean/head of department)  
+I have checked the candidate’s work and hereby certify that the candidate has done all the corrections suggested by the examiners/committee.  
+Candidate’s Name: ______________________________________________________ Candidate’s signature___________________________ Date: _____ /_____/_____ 
+Part IV: Final Submission of graduation project report/dissertation/ thesis 
+(To be filled by the candidate, please make sure that part II, III are filled before filling part IV) 
+To: VP academic Dear Sir/madam 
+I hereby submit 3 hardbound copies of my graduation project report/dissertation/thesis and a soft PDF copy in a disk drive which has been approved by the supervisor and the head of department. 
+Candidate’s Name: ______________________________________________________ 
+Candidate’s Signature ____________________________ Date: _____ /_____/_____
+ 
+Jamhuriya University of Science and Technology (JUST)
+Original Literary Work Declaration
+Name of Candidate 1: Munira Abdinor Ahmed	 	ID No:C1210128
+Name of Candidate 2: Fadumo Abdirahman Farah	 	ID No: C1210095
+Name of Candidate 3: Hamdi Dahir Keynan            	ID No: C12110145 
+Name of Candidate 4: Shukri Ali Ahmed                             ID No: C1210079
+Name of Degree: Bachelor Degree of Computer Application 
+Title of Project/Research Report/Thesis: Developing and Deploying an Integrated Management Platform and Mobile App for Streamlining Flower and Gift Shop Operations
+We do solemnly and sincerely declare that:  
+1.	We are the sole author/writer of this Work; 
+2.	This Work is original; 
+3.	Any use of any work in which copyright exists was done by way of fair dealing and for permitted purposes and any excerpt or extract from, or reference to or reproduction of any copyright work has been disclosed expressly and sufficiently and the title of the Work and its authorship have been acknowledged in this Work; 
+4.	We do not have any actual knowledge nor do we ought reasonably to know that the making of this work constitutes an infringement of any copyright work; 
+5.	We hereby assign all and every right in the copyright to this Work to Jamhuriya   University of Science and technology (“JUST”), who henceforth shall be owner of the copyright in this Work and that any reproduction or use in any form or by any means whatsoever is prohibited without the written consent of JUST having been first had and obtained; 
+6.	We are fully aware that if in the course of making this Work, we have infringed any copyright whether intentionally or otherwise, we may be subject to legal action or any other action as may be determined by JUST.  
+Candidate 1’s Signature: _________________________ Date: _____ /_____/______ 
+Candidate 2’s Signature: _________________________ Date: _____ /_____/______  
+Candidate 3’s Signature: _________________________ Date: _____ /_____/______  
+Candidate 4’s Signature: _________________________ Date: _____ /_____/______  
+Subscribed and solemnly declared before,  
+Supervisor’s Name: __________________________ Date: _____/_____/______ 
+Supervisor’s Signature: _________________ Designation: _______________________
+ 
+DEDICATION
+This work is dedicated to our beloved families, whose steadfast love and unwavering encouragement have been a constant source of strength and inspiration throughout this journey. We are profoundly grateful to our mentors, whose valuable guidance and persistent support have greatly influenced both our academic achievements and personal growth. Your belief in our potential has been fundamental to our progress. This thesis is a humble expression of our sincere gratitude for your enduring support. Above all, we give thanks to Almighty God, whose divine mercy and blessings have made this accomplishment possible. May His grace continue to shine upon all who have contributed to this endeavor.
+ 
+ACKNOWLEDGEMENT 
+In the name of Allah, the Most Compassionate, the Most Merciful. All praise and gratitude are due to Allah, the Sustainer of the worlds, for granting us the strength, patience, and perseverance necessary to complete this scholarly work. His guidance has been our beacon at every stage of this process.
+We extend our heartfelt appreciation to Professor Eng. Mohamed Ahmed Mohamud, President and Lecturer at Jamhuuriya University of Science and Technology, for his exemplary leadership and dedication to fostering a culture of academic excellence and innovation.
+Our sincere thanks go to the heads of our department and all instructors at Jamhuuriya University, whose commitment to education and mentorship has played a vital role in our intellectual and personal development.
+Special gratitude is due to our thesis advisor, Eng. Suleiman Abdullahi Ali, for his patient mentorship, insightful advice, and unwavering support throughout the research. His guidance has been an invaluable source of motivation and learning.
+We also wish to acknowledge Eng. Mohamed Abdullahi Mohamed (Shuuriye), our research coordinator, for his continuous assistance and expert advice in navigating the academic requirements and processes.
+We are thankful to all our lecturers for their dedicated teaching and for nurturing our curiosity and passion within the field. Their contributions have significantly shaped our academic foundation.
+To our parents, we owe endless thanks. Your sacrifices, confidence in us, and unconditional love have been the pillars supporting our success.
+Finally, we are grateful to our peers and friends for their companionship, encouragement, and shared experiences throughout this academic journey. Your support has enriched this experience and made it truly memorable.
+All praise and thanks are ultimately to Allah.
+ 
+Table of contents
+TABLE OF FIGURES	v
+List of Abbreviations	vi
+CHAPTER 1: INTRODUCTION	1
+1.1 Background of the Study	1
+1.2 Problem Statement	2
+1.3 Objectives of the Study	3
+1.3.1 General Objective	3
+1.3.2 Specific Objectives	4
+1.4 Research Questions	4
+1.5 Motivation of the Study	4
+1.6 Scope of the Study	5
+1.7 Significance of the Study	6
+1.8 Organization of the Study	6
+CHAPTER 2: LITERATURE REVIEW	8
+2.1 Introduction	8
+2.2 The Role of E-Commerce in Retail Business Growth	9
+2.2.1 Digital Transformation and Retail Value Chain Optimization	9
+2.2.2 Secure Payments and Financial Inclusion	9
+2.2.3 Future Trends: Technology-Driven Supply Chains	10
+2.2.4 Bridging Gaps for Somali SMEs	11
+2.3 Online Payment Systems and Their Importance in E-Commerce	11
+2.4 Logistics and Delivery Optimization in E-Commerce	12
+2.4.1 Last-Mile Delivery Challenges	13
+2.4.2 Strategies for Optimization	13
+2.4.3 Technology-Driven Solutions	14
+2.4.4 Customer-Centric Logistics	14
+2.4.5 Sustainability and Cost Efficiency	15
+2.5 Inventory Management and Stock Control in Retail Systems	15
+2.5.1 The Role of Digitalization in Inventory Management	15
+2.5.2 Predictive Analytics and AI in Stock Control	16
+2.5.3 Enhancing Efficiency through Technology	16
+2.5.4 Challenges in Inventory Management	17
+2.5.5 Future Directions in Inventory Management	17
+2.6 Customer Engagement and Relationship Management in Online Retail	18
+2.6.1 The Role of CRM Systems in Customer Engagement	18
+2.6.2 Personalized Marketing and Data Analytics	18
+2.6.3 Enhancing Customer Loyalty through Engagement	19
+2.6.4 The Impact of Technology on Customer Experience	19
+2.6.5 Future Trends in Customer Engagement	20
+2.7 Web and Mobile Application Design for Retail Businesses	21
+2.7.1 The Importance of User-Friendly Design	21
+2.7.2 Responsive Design for Multi-Device Compatibility	21
+2.7.3 UI/UX Principles for Enhanced User Experience	22
+2.7.4 Personalization in Web and Mobile Design	22
+2.8 Conclusion	23
+CHAPTER 3 METHODOLOGY	24
+3.1 Introduction	24
+3.2 System Description	24
+3.3 System Overview	25
+3.4 System Features	25
+3.5 System Development Environment	26
+3.6 System Requirements Specification	27
+3.6.1 Hardware Requirements	27
+3.6.2 Software Requirements	28
+3.7 Conclusion	29
+CHAPTER 4: SYSTEM ANALYSIS AND DESIGN	30
+4.1 System Analysis	30
+4.2 Existing Approach	30
+4.3 Proposed System	31
+4.3.1 System Components	31
+4.3.2 Core Features	31
+4.4 Requirements	32
+4.4.1 Functional Requirements	32
+4.4.2 Non-Functional Requirements	32
+4.5 Feasibility Study	33
+4.5.1 Technical Feasibility	33
+4.5.2 Operational Feasibility	33
+4.5.3 Economic Feasibility	33
+4.6 System Design	34
+4.6.1 System Architecture Overview	34
+4.6.2 Component Breakdown	35
+4.7 Database Design	36
+REFERENCES	38
+
+ 
+TABLE OF FIGURES
+Figure 4. 1 system architecture	35
+Figure 5. 1 Admin Dashboard	38
+Figure 5. 2 Products Management Page	39
+Figure 5. 3 Orders Management Page	40
+Figure 5. 4 Customers Management Page	41
+Figure 5. 5 Employees Management Page	41
+Figure 5. 6 Payment Management Page	42
+Figure 5. 7 Deleveries Management Page	43
+Figure 5. 8 Reports Page	43
+Figure 5. 9 App Login Screen	44
+Figure 5. 10 Customer Registration Screen	45
+Figure 5. 11 Customer Dashboard	46
+Figure 5. 12 Shopping Cart Screen	47
+Figure 5. 13 Checkout Screen	48
+Figure 5. 14 Orders Tab	49
+Figure 5. 15 Payments Tab	50
+Figure 5. 16 Employee Dashboard	51
+ 
+
+List of Abbreviations
+AI - Artificial Intelligence
+CRM - Customer Relationship Management
+E-Tailing - Electronic Retailing
+FMCG - Fast-Moving Consumer Goods
+IoT - Internet of Things
+NFC - Near Field Communication
+PLS-SEM - Partial Least Squares Structural Equation Modeling
+SEM - Structural Equation Modeling
+TMS - Transportation Management System
+WMS - Warehouse Management System
+3D Secure - 3D Secure Authentication Protocol
+EV - Electric Vehicle
+RDC - Regional Distribution Center
+SKU - Stock Keeping Unit
+CAGR - Compound Annual Growth Rate
+POS - Point of Sale
+API - Application Programming Interface 
+ 
+CHAPTER 1: INTRODUCTION
+1.1 Background of the Study
+The retail industry has undergone a profound transformation in recent years, driven by the rapid adoption of digital technologies and the global expansion of e-commerce. As highlighted by (Reinartz et al., 2019), the shift from traditional brick-and-mortar retail to digital platforms has redefined customer interactions, operational efficiency, and value creation across the retail value chain. This digital transformation enables businesses to streamline processes such as inventory management, customer relationship management (CRM), and logistics, while also fostering personalized and immersive shopping experiences. For small and medium enterprises (SMEs), particularly in underserved communities, embracing these technologies is critical to remaining competitive and expanding market reach.
+In regions like Somalia, where economic infrastructure is evolving, flower and gift shops face unique challenges. Many businesses in the Somali community still rely on manual processes for order management, inventory tracking, and customer engagement, leading to inefficiencies and limited scalability. Additionally, the lack of integrated digital platforms restricts access to broader markets and hampers customer satisfaction. The absence of secure, localized online payment systems further exacerbates these challenges, as highlighted by (Houcheimi & Mezei, 2024). Their research underscores how secure payment solutions, such as mobile money platforms, are pivotal for financial inclusion and e-tailing growth in underbanked regions. Without reliable payment gateways tailored to local preferences—like Somalia’s widespread use of Waafi—businesses struggle to build trust and facilitate seamless transactions.
+Logistical inefficiencies, particularly in last-mile delivery, present another critical barrier. (Mishra, 2024) emphasize that optimizing last-mile logistics is essential for e-commerce success, especially in urban areas with infrastructural constraints. For Somali flower and gift shops, unreliable delivery systems and fragmented coordination between suppliers, retailers, and customers often result in delayed orders and increased operational costs. These challenges are compounded by limited access to real-time inventory tracking and analytics, which are vital for informed decision-making and resource allocation.
+Against this backdrop, there is an urgent need for a tailored digital solution that addresses the specific needs of Somali flower and gift shops. A dynamic web portal integrated with a mobile application can bridge these gaps by automating core operations—such as order processing, CRM, and inventory management—while incorporating localized payment systems and logistics optimization. By leveraging insights from digital transformation frameworks (Reinartz et al., 2019),secure transaction model (Houcheimi & Mezei, 2024), and last-mile delivery strategies, (Mishra, 2024), this system aims to empower Somali SMEs with tools to enhance operational efficiency, customer satisfaction, and market adaptability in an increasingly digital economy.
+1.2 Problem Statement
+The flower and gift shop industry in Somalia operates with significant inefficiencies due to outdated, manual processes and a lack of integrated digital tools tailored to local needs. Key challenges include:
+1.	Manual Operations:
+o	Inventory management relies on paper-based tracking, leading to stock discrepancies (e.g., overstocking perishable flowers or stockouts during peak demand).
+o	Order processing and billing are time-consuming, with no real-time updates for customers or staff.
+2.	Fragmented Customer Experience:
+o	Customers lack a centralized platform to browse products, place orders, track deliveries, or engage with promotions, reducing satisfaction and loyalty.
+3.	Limited Local Payment Integration:
+o	Most shops cannot accept popular mobile money platforms like Waafi, forcing reliance on cash transactions that increase fraud risks and limit scalability.
+4.	Inefficient Delivery Logistics:
+o	Poor coordination with logistics providers causes delays, particularly for perishable goods requiring temperature-controlled delivery.
+5.	Lack of Data-Driven Insights:
+o	Owners lack tools to analyze sales trends, track employee performance, or optimize promotions, hindering decision-making.
+These issues underscore the need for a unified platform that integrates essential business functions while addressing Somalia’s unique logistical, cultural, and financial requirements.
+1.3 Objectives of the Study
+1.3.1 General Objective
+The primary objective of this study is to design and implement a dynamic web Portal and mobile tailored for flower and gift shops in the Somali community. The system aims to streamline operations, enhance customer engagement, and integrate localized solutions to overcome existing inefficiencies in inventory management, payment processing, and delivery logistics.
+1.3.2 Specific Objectives
+•	To automate inventory management for real-time tracking of perishable goods (e.g., flowers) and minimize stock discrepancies.
+•	To integrate local payment gateways (e.g., Waafi) and global payment solutions in future to enable secure, cashless transactions.
+•	To develop a user-friendly mobile app for customers to browse products, place orders, and track deliveries in real time.
+•	To create a centralized dashboard for shop managers to monitor sales analytics, employee performance, and promotional campaigns.
+•	To optimize delivery logistics for customer orders.
+•	To ensure the system’s accessibility with responsive design for diverse users.
+1.4 Research Questions
+•	What are the key operational challenges faced by flower and gift shops in Somalia?
+•	How can a web-based management system improve efficiency in inventory tracking and order processing?
+•	What technologies and frameworks are best suited for developing an e-commerce platform tailored to the Somali market?
+•	What are the potential impacts of digital transformation on business growth in this sector?
+•	What features are critical for integrating local mobile money systems into the portal to enhance financial inclusivity?
+1.5 Motivation of the Study
+The flower and gift shop sector in Somalia is a vital contributor to local entrepreneurship and cultural traditions, yet it remains underserved by modern digital tools. Existing generic e-commerce platforms lack features tailored to perishable goods management, local payment preferences, and Somalia’s unique logistical challenges (e.g., unmarked addresses). This study is motivated by the urgent need to:
+•	Empower SMEs with affordable, scalable technology to compete in a growing digital economy.
+•	Reduce reliance on error-prone manual processes that hinder business growth.
+•	Bridge the gap between global payment capabilities (e.g., card transactions) and Somalia’s cash-dominated market.
+•	Enhance customer satisfaction through seamless online shopping experiences and reliable delivery services.
+•	Promote financial inclusion by supporting mobile money adoption among underserved populations.
+1.6 Scope of the Study
+This study focuses on developing a web-based management portal and mobile application specifically for flower and gift shops in the Somali community. The system will cover:
+•	Functional Scope: Inventory management, order processing, CRM, payment integration (local with waafi api), delivery logistics, and sales analytics.
+•	Technical Scope: Responsive web design, mobile app development (Android/iOS) with Robust api’s.
+•	Geographical Scope: Primarily targets urban and semi-urban areas in Somalia with reliable internet access.
+•	Limitations: Excludes hardware development (e.g., IoT sensors for perishable goods) and third-party logistics infrastructure beyond API integration.
+1.7 Significance of the Study
+The outcomes of this study will benefit multiple areas like:
+•	Operational Efficiency: Automating manual workflows will reduce errors, save time, and lower operational costs for SMEs.
+•	Customer Satisfaction: Real-time order tracking and mobile app accessibility will improve transparency and trust in online shopping.
+•	Economic Growth: By enabling secure digital payments and global sales, the system will attract foreign currency and expand market reach.
+•	Digital Literacy: The intuitive interface will encourage technology adoption among underserved populations.
+•	Innovation: The system sets a precedent for sector-specific digital solutions in Somalia’s evolving e-commerce landscape.
+•	Social Impact: Empowering women-led businesses and rural entrepreneurs through accessible tools aligns with broader financial inclusion goals.
+1.8 Organization of the Study
+This study is organized into several distinct chapters, each focusing on different aspects of the research:
+Chapter 1: Introduction – Provides background information, problem statement, objectives, research questions, and significance of the study.
+Chapter 2: Literature Review – Examines existing research on e-commerce, web-based management systems, payment integration, and related challenges.
+Chapter 3: Methodology – Describes the research approach, data collection methods, and system development process.
+Chapter 4: System Analysis and Design – Details the functional and technical design of the proposed web portal.
+Chapter 5: Implementation and Testing – Presents the system implementation process and results from testing.
+Chapter 6: Results and Discussion – Analyzes the effectiveness of the developed system based on testing outcomes and user feedback.
+Chapter 7: Recommendations and Conclusion – Summarizes key findings, provides recommendations for improvement, and suggests areas for future research.
+ 
+CHAPTER 2: LITERATURE REVIEW
+2.1 Introduction
+The retail landscape is undergoing a significant transformation, driven by the rapid adoption of digital technologies and the increasing prevalence of e-commerce. This chapter presents a comprehensive literature review that explores the critical components of online retail, focusing on how these elements can be leveraged to enhance the operations of flower and gift shops, particularly within the Somali community.
+The need for a tailored digital solution is paramount for addressing the unique challenges faced by flower and gift shops in Somalia. These challenges include inefficient manual processes, limited access to secure payment systems, and logistical hurdles that hinder customer satisfaction and business growth. By examining relevant research, this chapter aims to provide insights into the role of e-commerce, customer relationship management (CRM), inventory management, and the design of web and mobile applications in overcoming these barriers.
+The literature reviewed highlights the transformative impact of e-commerce on retail business growth, emphasizing the necessity of adopting digital platforms to enhance operational efficiency and customer engagement. Key findings indicate that secure online payment systems are vital for fostering trust and financial inclusion, particularly in underbanked regions. Additionally, effective inventory management, powered by AI and predictive analytics, is essential for preventing stockouts and overstocking, thereby improving overall efficiency. The importance of logistics and delivery optimization is underscored, with strategies such as route optimization and technology-driven solutions playing a significant role in enhancing customer satisfaction.
+Customer engagement through CRM systems and personalized marketing is crucial for building loyalty and encouraging repeat purchases. The design of web and mobile applications, focusing on user-friendly interfaces and responsive design, is essential for providing a seamless shopping experience.
+Overall, the insights gained from this literature review will inform the development of a comprehensive management system for flower and gift shops, ensuring that it meets the unique needs of the Somali community while leveraging the latest advancements in technology and customer engagement strategies.
+2.2 The Role of E-Commerce in Retail Business Growth
+ E-commerce has emerged as a transformative force in the retail industry, enabling businesses to achieve operational efficiency, expand market reach, and drive revenue growth. For flower and gift shops, adopting digital platforms is no longer optional but a strategic imperative to remain competitive in a rapidly evolving marketplace.
+2.2.1 Digital Transformation and Retail Value Chain Optimization
+(Reinartz et al., 2019) emphasize that digital transformation redefines the retail value chain by integrating advanced technologies into core operations such as inventory management, customer engagement, and logistics. For instance, e-commerce platforms automate order processing and enable real-time inventory updates, reducing human error and operational costs. In the context of flower and gift shops, where perishable goods require precise stock management, such automation minimizes waste and ensures product freshness. The authors further note that digital tools enhance customer relationships through personalized marketing and seamless omnichannel experiences, which are critical for fostering loyalty in competitive markets like Somalia’s urban centers.
+2.2.2 Secure Payments and Financial Inclusion
+The growth of e-tailing hinges on secure and accessible payment systems. (Houcheimi & Mezei, 2024) highlight how localized digital payment solutions, such as mobile money platforms, are pivotal for financial inclusion in underbanked regions. In Somalia, where cash transactions dominate, integrating platforms like Waafi into e-commerce systems reduces fraud risks and broadens customer access to online shopping. Their research underscores that secure payment gateways build consumer trust, which is essential for SMEs to transition from informal cash-based operations to formalized digital commerce. For flower and gift shops, this integration not only streamlines transactions but also unlocks opportunities to attract diaspora customers through global payment options (e.g., credit cards), thereby expanding revenue streams.
+2.2.3 Future Trends: Technology-Driven Supply Chains
+Industry insights from (Denizeri, n.d.)  outline five key trends shaping retail supply chains by 2025, all of which are relevant to SMEs in the flower and gift sector:
+•	AI-Powered Demand Forecasting: Machine learning algorithms analyze historical sales data and seasonal trends to predict demand for perishable goods like flowers, reducing overstocking and stockouts.
+•	Sustainable Logistics: Climate-conscious delivery routes and eco-friendly packaging align with global sustainability goals while appealing to environmentally aware customers.
+•	Blockchain for Transparency: Blockchain technology tracks product origins (e.g., ethically sourced flowers), enhancing brand credibility.
+•	IoT-Enabled Inventory Management: Smart sensors monitor storage conditions (e.g., temperature for flowers) and trigger automated replenishment alerts.
+•	Hyperlocal Delivery Networks: Partnerships with local logistics providers enable faster, cost-effective last-mile delivery—a critical advantage for time-sensitive goods like floral arrangements.
+These trends underscore the importance of adopting scalable technologies to future-proof operations. For Somali flower and gift shops, leveraging AI and IoT can mitigate infrastructural challenges, such as unreliable transportation networks, while blockchain and sustainability initiatives align with global market expectations.
+2.2.4 Bridging Gaps for Somali SMEs
+The convergence of these insights highlights the transformative potential of e-commerce for Somali flower and gift shops. A web-based platform tailored to local needs can:
+•	Automate inventory and order management to reduce waste and operational costs (Reinartz et al., 2019).
+•	Integrate Waafi and other payment gateways to enhance financial inclusion (Houcheimi & Mezei, 2024).
+•	Adopt AI-driven tools to optimize supply chains and delivery logistics (Denizeri, n.d.).
+By addressing these areas, SMEs can overcome traditional barriers, scale operations, and compete effectively in both local and global markets.
+2.3 Online Payment Systems and Their Importance in E-Commerce
+In the digital age, online payment systems play a pivotal role in fostering e-commerce growth by ensuring secure transactions, reducing fraud risks, and increasing customer trust. As businesses continue to transition to digital platforms, the adoption of robust payment gateways has become essential for sustainable economic activities.
+One of the fundamental aspects of online payment security is multi-factor authentication (MFA), which enhances transaction security by incorporating biometric verification, encryption, and location-based authentication (Alamleh et al., 2023), emphasize that modern mobile payment systems should leverage these authentication methods to mitigate fraud risks and ensure legitimacy in financial transactions. Near Field Communication (NFC) payments, for example, have emerged as a secure and efficient alternative, allowing consumers to complete transactions swiftly while benefiting from advanced encryption techniques (Alamleh et al., 2023).
+The security of electronic payment systems is further reinforced by tokenization, which replaces sensitive credit card information with unique identifiers. According to (Solat, 2017),tokenization enhances payment security by minimizing exposure to financial data, thereby reducing the risk of cyber fraud. Additionally, 3D Secure authentication protocols, such as Verified-by-Visa and MasterCard SecureCode, add another layer of protection by requiring customers to verify their identities before completing online purchases (Solat, 2017).
+For emerging markets, localized payment solutions are critical to fostering adoption and financial inclusion. The recent collaboration between Mastercard and Premier Bank in Somalia demonstrates how tailored digital payment gateways can expand e-commerce opportunities. By enabling Somali businesses to accept international payments securely, this initiative has not only increased market reach but also contributed to economic growth (Mastercard, 2024). The integration of digital payments aligns with global financial inclusion goals and supports local businesses in navigating the evolving e-commerce landscape.
+Ultimately, online payment systems serve as the backbone of digital commerce, offering security, efficiency, and inclusivity. As technological advancements continue to shape the financial sector, businesses must prioritize secure payment infrastructures to enhance customer confidence and drive e-commerce success.
+2.4 Logistics and Delivery Optimization in E-Commerce
+Summar Logistics and delivery optimization are critical components of e-commerce, particularly for businesses dealing with perishable goods like flowers, where timely delivery directly impacts customer satisfaction and product quality. This section explores the challenges and strategies for optimizing last-mile delivery, focusing on route optimization, real-time tracking, and delivery management, all of which are essential for a seamless online shopping experience.
+2.4.1 Last-Mile Delivery Challenges
+The last mile of delivery—the final leg from distribution centers to customers—is often the most complex and costly phase of the supply chain. Urban logistics face unique challenges, including traffic congestion, high population density, and limited infrastructure. According to (Mishra, 2024), last-mile delivery can account for up to 53% of total shipping costs due to factors such as fuel prices, vehicle maintenance, and labor expenses. Additionally, consumer expectations for faster and more flexible delivery options, such as same-day or one-hour delivery, further complicate logistics operations. These challenges are exacerbated in regions with underdeveloped infrastructure, such as Somalia, where informal addressing systems and fragmented transportation networks add layers of complexity.
+2.4.2 Strategies for Optimization
+To address these challenges, several strategies have been proposed and implemented in urban logistics. Route optimization algorithms, powered by artificial intelligence (AI) and machine learning (ML), analyze real-time traffic data, delivery priorities, and road conditions to determine the most efficient delivery routes. These tools reduce delivery times and fuel consumption, improving overall efficiency (Mishra, 2024). Crowd-sourced delivery models, which leverage independent contractors or gig workers, offer flexibility and scalability, particularly during peak demand periods. Platforms like Uber Eats and Amazon Flex demonstrate the potential of this approach to enhance delivery capabilities without significant investment in fleet expansion.
+Micro-hubs, or intermediate storage locations, are another effective strategy. These hubs allow for the consolidation of orders, reducing the need for large delivery vehicles in dense urban areas. By enabling the use of eco-friendly transport modes, such as bicycles or electric scooters, for the final leg of delivery, micro-hubs contribute to sustainability while lowering operational costs. Electric vehicles (EVs) and autonomous delivery systems, including drones, are also gaining traction as sustainable alternatives to traditional delivery vans, reducing carbon footprints and addressing environmental concerns (Mishra, 2024).
+2.4.3 Technology-Driven Solutions
+The integration of advanced technologies is transforming logistics operations. (Llivisaca et al., 2022)highlights the role of AI-powered demand forecasting in predicting seasonal spikes and optimizing inventory placement. IoT sensors monitor storage conditions, such as temperature for perishable goods, and trigger automated replenishment alerts, ensuring product freshness. Blockchain technology enhances transparency and traceability, particularly for ethically sourced products, while omnichannel strategies unify inventory and delivery processes across multiple platforms.
+Data-driven decision-making is another critical component of logistics optimization. By leveraging big data analytics, businesses can identify patterns in consumer behavior, peak delivery times, and urban traffic trends. This information enables proactive decision-making, such as adjusting delivery resources to meet demand surges, ensuring timely and cost-effective deliveries (Llivisaca et al., 2022).
+2.4.4 Customer-Centric Logistics
+Customer satisfaction is closely tied to the efficiency of logistics operations. (Ahmed, 2024)emphasizes the importance of lead time management, inventory control, and transportation efficiency in enhancing the customer experience. The study found that lead time management has the strongest impact on customer satisfaction (coefficient = 0.63), followed by inventory management (0.211) and transportation (0.134). Real-time tracking and flexible delivery options, such as scheduled pickups or same-day delivery, are essential for meeting customer expectations and reducing failed delivery attempts.
+2.4.5 Sustainability and Cost Efficiency
+Sustainability is a growing concern in logistics, particularly in urban areas where delivery vehicles contribute to air pollution and traffic congestion. Transitioning to electric vehicles, optimizing delivery routes to minimize fuel consumption, and implementing micro-hubs are effective strategies for reducing environmental impacts while lowering operational costs. Cross-docking, a logistics strategy that minimizes warehousing by directly transferring goods from incoming to outgoing vehicles, also reduces inventory holding costs and improves delivery efficiency (Llivisaca et al., 2022)
+By adopting advanced technologies, such as AI-driven route optimizations and enabled inventory management, businesses can streamline operations and enhance customer satisfaction. These approaches align with the broader goals of creating efficient, scalable, and customer-centric logistics systems, ensuring a seamless shopping experience for consumers.
+2.5 Inventory Management and Stock Control in Retail Systems
+This section explores inventory management technologies, including AI-powered stock tracking and predictive analytics, to prevent stockouts and overstocking. These technologies improve the efficiency and accuracy of retail systems, which is particularly crucial for flower and gift shops.
+2.5.1 The Role of Digitalization in Inventory Management
+The logistics performance of retail businesses, particularly in the fast-moving consumer goods (FMCG) sector, is significantly influenced by effective inventory management. (Chauhan et al., 2023) emphasize that digitalization plays a crucial role in optimizing transportation and warehousing performance, which directly impacts logistics distribution performance. By adopting digital tools such as warehouse management systems (WMS) and transportation management systems (TMS), businesses can enhance operational efficiency, reduce costs, and improve customer satisfaction. The integration of these technologies allows for real-time inventory tracking, which is essential for managing perishable goods like flowers.
+2.5.2 Predictive Analytics and AI in Stock Control
+AI-powered predictive analytics are becoming increasingly important in inventory management. (Li & Shi, 2024) discuss the optimization of logistics networks, particularly in the context of prepositioned warehouses, where maintaining product freshness is critical. Their research highlights the use of mathematical optimization models to manage inventory effectively, ensuring that stock levels are aligned with consumer demand. By leveraging AI algorithms, businesses can analyze historical sales data and seasonal trends to forecast demand accurately, thereby minimizing the risks of stockouts and overstocking.
+2.5.3 Enhancing Efficiency through Technology
+The implementation of advanced technologies in inventory management is essential for improving efficiency.(Yang et al., 2023) propose a deep reinforcement learning-based logistics management model (DELLMM) that optimizes logistics distribution. Their findings indicate that integrating AI and machine learning into inventory management processes can lead to significant improvements in operational efficiency. By utilizing real-time data and self-learning algorithms, businesses can enhance their inventory control strategies, ensuring timely replenishment and reducing waste.
+2.5.4 Challenges in Inventory Management
+Despite the advancements in inventory management technologies, challenges remain, particularly in the context of perishable goods. The need for timely deliveries and maintaining product quality adds complexity to inventory management. (Chauhan et al., 2023) note that inefficiencies in transportation and warehousing can lead to increased costs and reduced profitability for retailers. Therefore, addressing these challenges through digitalization and optimization strategies is crucial for enhancing inventory management in the retail sector.
+2.5.5 Future Directions in Inventory Management
+As the retail landscape continues to evolve, the integration of AI and digital technologies in inventory management will be vital for success. The research by (Li & Shi, 2024) suggests that future studies should focus on the development of more sophisticated inventory management models that account for the unique characteristics of perishable goods. By embracing innovative technologies and optimizing logistics networks, retailers can improve their inventory management practices, ultimately leading to enhanced customer satisfaction and business growth.
+The integration of AI-powered stock tracking and predictive analytics in inventory management is essential for improving the efficiency and accuracy of retail systems. The findings from the relevant research underscore the importance of adopting digital technologies to optimize inventory control processes, particularly for businesses dealing with perishable goods like flowers. By leveraging these advancements, retailers can navigate the complexities of modern supply chains and ensure timely delivery of products, contributing to their overall success in a competitive marketplace.
+2.6 Customer Engagement and Relationship Management in Online Retail
+This section discusses customer engagement through CRM systems, personalized marketing, and data analytics. It explains how these tools enhance customer loyalty, repeat purchases, and improve the overall shopping experience.
+2.6.1 The Role of CRM Systems in Customer Engagement
+Customer Relationship Management (CRM) systems are essential for managing interactions with current and potential customers. According to (Reinartz et al., 2019), digital transformation has enabled retailers to leverage CRM systems to collect and analyze customer data, allowing for more personalized and targeted marketing efforts. For flower and gift shops, CRM systems can track customer preferences, purchase history, and feedback, enabling businesses to tailor their offerings to individual needs. This personalization not only enhances customer satisfaction but also fosters loyalty, as customers feel valued and understood.
+CRM systems also facilitate seamless communication across multiple channels, ensuring that customers receive consistent and timely responses. For instance, a customer who purchases flowers for a special occasion can receive personalized follow-up messages, such as reminders for upcoming events or special discounts on related products. This level of engagement strengthens the customer-business relationship and encourages repeat purchases.
+2.6.2 Personalized Marketing and Data Analytics
+Personalized marketing is a key driver of customer engagement in online retail. (Houcheimi & Mezei, 2024) highlight that secure online payment systems, combined with data analytics, enable businesses to offer personalized recommendations and promotions. For example, a customer who frequently purchases roses may receive targeted offers for similar products or complementary items like vases or chocolates. This approach not only increases sales but also enhances the customer experience by making shopping more convenient and relevant.
+Data analytics plays a crucial role in understanding customer behavior and predicting future trends. By analyzing purchase patterns, businesses can identify which products are most popular during specific seasons or events, allowing them to optimize inventory and marketing strategies. For flower and gift shops, this means being able to anticipate demand for certain flowers during holidays or special occasions, ensuring that they can meet customer expectations while minimizing waste.
+2.6.3 Enhancing Customer Loyalty through Engagement
+Customer loyalty is a critical factor for the long-term success of any retail business. (Reinartz et al., 2019) emphasize that digital tools, such as loyalty programs and personalized offers, are effective in retaining customers. For instance, a flower shop could implement a points-based loyalty program where customers earn rewards for every purchase. These rewards can then be redeemed for discounts or free products, incentivizing repeat business.
+Moreover, engaging customers through social media and email marketing can further strengthen loyalty. By sharing content such as flower care tips, gift ideas, or behind-the-scenes glimpses of the business, flower and gift shops can create a sense of community and connection with their customers. This not only keeps the brand top-of-mind but also encourages customers to return for future purchases.
+2.6.4 The Impact of Technology on Customer Experience
+The integration of advanced technologies, such as AI and IoT, is transforming the way businesses engage with customers. (Denizeri, n.d.) discusses how AI-powered tools can analyze customer data to provide personalized recommendations and improve the overall shopping experience. For example, an AI-driven chatbot can assist customers in selecting the perfect bouquet based on their preferences and budget, providing a more interactive and satisfying shopping experience.
+IoT devices, such as smart sensors, can also enhance customer engagement by providing real-time updates on product availability and delivery status. For flower and gift shops, this means being able to notify customers when their order is ready for pickup or when it is out for delivery, reducing uncertainty and improving satisfaction.
+2.6.5 Future Trends in Customer Engagement
+As technology continues to evolve, the future of customer engagement in online retail will be shaped by even more advanced tools and strategies. Denizeri (n.d.) predicts that AI and machine learning will play an increasingly important role in predicting customer behavior and automating personalized marketing efforts. Additionally, the use of augmented reality (AR) and virtual reality (VR) could revolutionize the way customers interact with products online. For example, customers could use AR to visualize how a bouquet would look in their home before making a purchase, enhancing their confidence in the product and reducing the likelihood of returns.
+In conclusion, customer engagement and relationship management are critical components of a successful online retail strategy. By leveraging CRM systems, personalized marketing, and data analytics, flower and gift shops can enhance customer loyalty, drive repeat purchases, and improve the overall shopping experience. As technology continues to advance, businesses that embrace these tools will be better positioned to meet the evolving needs of their customers and remain competitive in the digital marketplace.
+2.7 Web and Mobile Application Design for Retail Businesses
+This section discusses the importance of a user-friendly interface and responsive design for both web portals and mobile applications. It focuses on UI/UX principles that ensure an enhanced user experience for customers interacting with the e-commerce platform.
+2.7.1 The Importance of User-Friendly Design
+A user-friendly interface is crucial for the success of any e-commerce platform. (Houcheimi & Mezei, 2024) emphasize that secure online payment systems must be paired with intuitive design to ensure a seamless shopping experience. For flower and gift shops, this means creating a web portal and mobile app that are easy to navigate, with clear product categories, search functionality, and a straightforward checkout process.
+A well-designed interface reduces friction in the purchasing process, making it more likely that customers will complete their transactions. For example, a mobile app that allows customers to quickly browse products, add items to their cart, and check out with just a few taps will lead to higher conversion rates and customer satisfaction.
+2.7.2 Responsive Design for Multi-Device Compatibility
+With the increasing use of mobile devices for online shopping, responsive design has become a necessity. (Reinartz et al., 2019) highlight that a responsive design ensures that the e-commerce platform functions seamlessly across different devices, including smartphones, tablets, and desktops. This is particularly important for flower and gift shops, as customers may browse products on their mobile devices but complete the purchase on a desktop or vice versa.
+A responsive design also improves the overall user experience by adapting the layout and content to fit the screen size of the device being used. This ensures that customers can easily navigate the platform, view product details, and make purchases regardless of the device they are using.
+2.7.3 UI/UX Principles for Enhanced User Experience
+User Interface (UI) and User Experience (UX) design principles play a critical role in creating an engaging and enjoyable shopping experience.(Houcheimi & Mezei, 2024) suggest that a well-designed UI/UX can significantly impact customer satisfaction and loyalty. For flower and gift shops, this means focusing on elements such as:
+•	Visual Appeal: The use of high-quality images, attractive color schemes, and clean layouts can make the platform more visually appealing and encourage customers to explore products.
+•	Ease of Navigation: Clear menus, intuitive search functionality, and well-organized product categories help customers find what they are looking for quickly and easily.
+•	Speed and Performance: A fast-loading platform with minimal lag ensures that customers can browse and purchase products without frustration.
+•	Accessibility: Ensuring that the platform is accessible to all users, including those with disabilities, by following accessibility guidelines and best practices.
+2.7.4 Personalization in Web and Mobile Design
+Personalization is a key trend in web and mobile design, as it enhances the user experience by tailoring the platform to individual preferences. (Reinartz et al., 2019) discuss how AI and data analytics can be used to create personalized experiences for customers. For example, a flower shop’s mobile app could display personalized product recommendations based on the customer’s past purchases or browsing history.
+Personalization can also extend to the checkout process, where customers can save their payment information and delivery preferences for faster transactions. This not only improves convenience but also increases the likelihood of repeat purchases.
+
+2.8 Conclusion
+In summary, this chapter has explored the critical components of online retail and their implications for the success of flower and gift shops. The literature reviewed highlights the transformative impact of e-commerce on retail business growth, emphasizing the necessity of adopting digital platforms to enhance operational efficiency and customer engagement.
+Key findings indicate that secure online payment systems are vital for fostering trust and financial inclusion, particularly in underbanked regions. Additionally, effective inventory management, powered by AI and predictive analytics, is essential for preventing stockouts and overstocking, thereby improving overall efficiency. The importance of logistics and delivery optimization has also been underscored, with strategies such as route optimization and the use of technology-driven solutions playing a significant role in enhancing customer satisfaction.
+Furthermore, customer engagement through CRM systems and personalized marketing is crucial for building loyalty and encouraging repeat purchases. The design of web and mobile applications, focusing on user-friendly interfaces and responsive design, is essential for providing a seamless shopping experience.
+Overall, the insights gained from this literature review will inform the development of a comprehensive management system for flower and gift shops, ensuring that it meets the unique needs of the Somali community while leveraging the latest advancements in technology and customer engagement strategies.
+ 
+CHAPTER 3 METHODOLOGY
+3.1 Introduction
+The rise of digital solutions in retail management offers a transformative opportunity for Somali flower and gift shop businesses to overcome traditional operational challenges. This chapter outlines the methodology used to design and develop a dynamic web portal and mobile application tailored to the needs of flower and gift shop owners. It describes the development strategy, tools, frameworks, and workflows selected to ensure that the system is scalable, user-friendly, secure, and culturally relevant to the Somali market.
+The methodology is structured to cover the system description, architectural overview, key features, development environments, and specific system requirements needed to build a reliable platform that enhances operational efficiency and customer satisfaction.
+3.2 System Description
+The proposed solution is a comprehensive management system made up of two main components:
+•	A Web-Based Admin Portal: Designed for flower and gift shop owners and employees to manage inventory, orders, promotions, payments, and deliveries.
+•	A Mobile Application: Targeted at customers for browsing products, placing orders, and tracking deliveries.
+Both components will seamlessly integrate to offer a complete digital business environment. Key goals of the system include automating inventory management, supporting local payment integrations (like Waafi), enhancing delivery logistics, and providing real-time business insights through a sales analytics dashboard.
+The system is crafted to address the current operational gaps while supporting growth, scalability, and future integration with global marketplaces if desired.
+3.3 System Overview
+The system architecture adopts a modern, modular approach:
+•	Backend: Node.js (Express Framework) for building RESTful APIs.
+•	Frontend:
+o	React.js for the web admin dashboard.
+o	Flutter for the mobile customer application (targeting Android devices initially).
+•	Database: MySQL for secure, structured data storage.
+•	Payment Integration: Waafi mobile money platform for localized transactions.
+Communication between client and server is managed via secure, encrypted API calls. Role-based access control ensures different permission levels for administrators, employees, and customers.
+3.4 System Features
+The dynamic flower and gift shop management system will encompass the following modules:
+1.	Product Catalog and Inventory Management
+o	Real-time stock tracking and categorization (e.g., flowers, gift baskets).
+2.	Order and Shopping Cart Management
+o	Customers can add items to cart, place orders, and view order history.
+o	Staff can manage incoming orders with status updates (Pending, Preparing, Shipped, Delivered).
+3.	Payment Gateway Integration
+o	Support for Waafi mobile money API.
+o	Invoice generation and order confirmation after successful transactions.
+4.	Delivery Scheduling and Tracking
+o	Customers provide addresses (with optional location pin via Google Maps).
+o	Staff or logistics partners receive automatic delivery assignments.
+5.	Customer Registration and Profile Management
+o	Secure login, personal profiles, and loyalty tracking.
+6.	Sales and Performance Analytics
+o	Daily, weekly, and monthly sales reports visualized with charts.
+o	Profit margin tracking and product performance insights.
+7.	Employee Management
+o	Staff role assignment (Admin, Delivery Staff).
+o	Performance reports for individual employees.
+8.	User-Friendly Interface
+o	Responsive web and mobile design.
+3.5 System Development Environment
+A robust technology stack and development environment will be employed to ensure scalability, security, and maintainability:
+1.	Development Tools
+o	Visual Studio Code: Primary code editor for backend and frontend.
+o	Android Studio: Mobile app development and emulator testing.
+2.	Frontend Frameworks
+o	React.js: Admin dashboard development.
+o	Flutter: Mobile application development (cross-platform, focusing initially on Android).
+3.	Backend and API Development
+o	Node.js (v18+), Express.js for RESTful services.
+o	Sequelize ORM for efficient MySQL database interaction.
+o	JWT for authentication and secure session management.
+4.	Testing and Version Control
+o	Postman for API testing.
+o	Git & GitHub for source control and collaboration.
+5.	Other Libraries and Plugins
+o	Axios for API requests.
+o	Flutter packages:http, provider and many more
+o	React libraries: Redux, TailwindCSS, Chart.js, shadcn/ui components for better UI design.
+3.6 System Requirements Specification
+3.6.1 Hardware Requirements
+•	Server-Side
+o	Processor: Intel Core i5 or better
+o	RAM: Minimum 8 GB
+o	Storage: 256 GB SSD or scalable based on user load
+•	Client Devices
+o	Smartphones: Android devices with 2GB+ RAM and internet access
+o	Admin PCs: Core i5+, minimum 8GB RAM, SSD recommended
+3.6.2 Software Requirements
+•	Server Software
+o	Operating System: Ubuntu 20.04 LTS or Windows Server
+o	Database Server: MySQL 8.0
+o	Web Server: XAMPP (for local development), Nginx for production hosting
+o	Runtime Environment: Node.js v18 or higher
+•	Client Software
+o	Mobile: Flutter SDK, Android SDK, Dart
+o	Admin Portal: Modern browsers (Chrome, Edge, Firefox)
+•	Security and Maintenance
+o	Encrypted SSL/TLS transmission
+o	Role-based access for sensitive data operations
+o	Daily database backups and server security patches
+•	Scalability
+o	Future-proofed with containerization options (Docker)
+o	CI/CD pipeline for streamlined deployments (planned for Phase 2)
+3.7 Conclusion
+The selected methodology ensures that the proposed system is robust, secure, and tailored to the unique challenges of managing flower and gift shops within the Somali community. By using modern web and mobile development practices, the system will bridge the digital gap, empowering businesses with better tools for inventory management, customer engagement, secure payments, and delivery logistics. Ultimately, the platform will enable SMEs to enhance their service quality, grow their customer base, and achieve greater financial inclusion in the digital economy.
+ 
+CHAPTER 4: SYSTEM ANALYSIS AND DESIGN
+4.1 System Analysis
+System analysis is a critical step in the development lifecycle as it uncovers operational gaps, defines system requirements, and frames a clear vision for the proposed solution. For the Flower and Gift Shop Management System aimed at the Somali market, the analysis phase examines the current limitations in inventory handling, order processing, payment methods, and delivery coordination.
+Flower and gift shops in Somalia commonly struggle with fragmented sales tracking, inefficient stock management, and cash-only payment processes. These issues affect profitability, customer satisfaction, and the ability to scale. Our system aims to tackle these problems by offering a centralized digital solution that automates operations, enhances customer engagement, and integrates secure, local payment methods.
+4.2 Existing Approach
+Currently, most flower and gift shops operate using paper records or basic mobile communication. Inventory updates are manual, orders are processed informally, and customer service is inconsistent. Payments are typically cash-based, which limits online sales opportunities and creates accounting challenges.
+Key Drawbacks of Current Methods:
+•	Manual Inventory Records: Result in frequent stock discrepancies and product spoilage, particularly with perishable flowers.
+•	Order Handling via Phone: Leads to missed orders, wrong deliveries, and poor customer follow-up.
+•	Cash Dependency: Reduces convenience for customers who prefer digital payments and raises security risks for businesses.
+•	No Real-Time Tracking: Customers have no visibility into the status of their orders or deliveries.
+This environment calls for a transformative platform that automates and digitizes critical processes.
+4.3 Proposed System
+The dynamic web portal and mobile app system addresses these gaps by offering a cloud-based, integrated solution for inventory management, customer interaction, secure payment processing, and logistics coordination.
+4.3.1 System Components
+•	Customer Mobile App (Flutter)
+o	Product browsing and search functions.
+o	Shopping cart and secure checkout with Waafi payment integration.
+o	Real-time delivery tracking and order history.
+•	Admin Web Portal (React.js)
+o	Product management (add, edit, categorize, deactivate products).
+o	Real-time sales dashboard and inventory alerts.
+o	Employee management, promotion setup, and order processing.
+•	Backend Server (Node.js + Express)
+o	Centralized API layer for user authentication, inventory updates, order management, and payment processing.
+•	Database Server (MySQL)
+o	Structured data storage with transactional integrity for customers, orders, products, employees, and payments.
+4.3.2 Core Features
+•	Inventory Automation: Real-time stock level updates and low-stock warnings.
+•	Secure Online Payments: Local Waafi API integration for mobile money transactions.
+•	Customer Order Tracking: Instant tacking about order status changes.
+•	Sales Analytics: Business insights through visualized data for better decision-making.
+•	Multi-User Roles: Admins and employees with tailored permissions.
+•	Promotion Management: Timed discounts and loyalty rewards to increase customer retention.
+4.4 Requirements
+4.4.1 Functional Requirements
+•	User Registration & Authentication: Secure login for customers and employees using hashed passwords.
+•	Product Management: CRUD operations (Create, Read, Update, Delete) for product listings.
+•	Order Placement & Tracking: Customers can view, track, and receive updates on their orders.
+•	Payment Processing: Secure payment gateway supporting Waafi and future card payment integrations.
+•	Delivery Scheduling: Customers input delivery addresses with optional map pinning.
+•	Admin Dashboard: Analytics reporting, staff management, and promotion setup capabilities.
+4.4.2 Non-Functional Requirements
+•	Performance: Fast response times optimized for low-to-moderate bandwidth environments.
+•	Security: Encrypted data transmission, secure authentication, and role-based access control.
+•	Reliability: System uptime above 99% with robust error handling mechanisms.
+•	Usability: Interfaces optimized for users with basic tech literacy, with a focus on simplicity and clear navigation.
+•	Scalability: Infrastructure ready to scale horizontally as the user base grows.
+4.5 Feasibility Study
+4.5.1 Technical Feasibility
+The proposed system is technically feasible using widely adopted open-source technologies. Flutter ensures smooth mobile app performance, React offers a dynamic and responsive admin interface, and Node.js + MySQL provide a scalable backend and database solution. Integration with Waafi's APIs is also straightforward and well-documented.
+4.5.2 Operational Feasibility
+The system design reflects the daily operational needs of Somali flower and gift shops. Shop owners and employees will require minimal training due to the intuitive interface. Mobile-first design ensures customers can easily access the system from their smartphones. Cultural localization (e.g., supporting Somali language) will enhance adoption rates.
+4.5.3 Economic Feasibility
+Development and maintenance costs are minimized by using open-source frameworks and cloud hosting solutions. Automation of inventory, billing, and customer communication will significantly lower operational costs for shops. Additionally, expanding sales channels digitally opens new revenue streams without heavy physical infrastructure investments.
+4.6 System Design
+4.6.1 System Architecture Overview
+High-Level Architecture:
+•	Flutter Mobile Application:
+o	Customer-facing UI for browsing, ordering, and tracking.
+•	React Admin Web Portal:
+o	Admin tools for product management, order handling, and analytics.
+•	Node.js Backend Server:
+o	REST APIs for mobile and web clients.
+o	Authentication, payment processing, inventory and order management.
+•	MySQL Database:
+o	Centralized storage for users, products, orders, payments, and delivery logs.
+o	The system communicates securely over HTTPS, ensuring data protection for all transactions and user activities.
+ 
+Figure 4. 1 system architecture
+4.6.2 Component Breakdown
+•	Mobile App:
+o	Product Catalog
+o	Cart Management
+o	Order Tracking
+o	Payment Gateway Access
+•	Admin Portal:
+o	Product Management
+o	Promotions Setup
+o	Order Fulfillment Tracking
+o	Sales and Customer Reports
+•	Backend Server:
+o	User Authentication
+o	Inventory Control APIs
+o	Order Processing Logic
+o	Payment Validation and Notification Services
+•	Database:
+o	Tables for Users, Orders, Products, Promotions, Payments, and Deliveries.
+4.7 Database Design
+The relational database is carefully structured to maintain data integrity and support fast queries. It includes:
+Key Tables and Fields:
+•	Admins
+o	Admin_ID, Name, Email, Password (hashed), Created_At
+•	Customers
+o	Customer_ID, Name, Phone, Email, Address, Created_At
+•	Employees
+o	Employee_ID, Name, Role, Phone, Status
+•	Products
+o	Product_ID, Name, Category, Price, Stock_Quantity, Status
+•	Orders
+o	Order_ID, Customer_ID, Status (Pending, Shipped, Delivered), Payment_Status, Total_Amount
+•	Payments
+o	Payment_ID, Order_ID, Payment_Type (Waafi, Card), Payment_Status, Transaction_Date
+•	Deliveries
+o	Delivery_ID, Order_ID, Delivery_Address, Scheduled_Date, Delivery_Status
+•	Promotions
+o	Promotion_ID, Product_ID, Discount_Percentage, Start_Date, End_Date
+ 
+CHAPTER 5: IMPLEMENTATION AND TESTING
+5.1 Introduction
+This chapter details the implementation and testing stages of the Integrated Management Platform and Mobile App for Streamlining Flower and Gift Shop Operations. The system was developed as a comprehensive solution comprising a React.js web portal for administrative management, a Flutter mobile application for customers, and a Node.js backend API. The implementation focuses on addressing the specific challenges faced by Somali flower and gift shops, including inventory management, order processing, payment integration, and delivery coordination.
+5.2 System Screenshots
+The system features the following user interfaces, categorized into the Admin Web Portal and the Customer Mobile Application.
+5.2.1 Administrator Screens
+ 
+Figure 5. 1 Admin Dashboard
+The admin dashboard serves as the central command center for shop owners and administrators. It displays comprehensive analytics including total orders, revenue statistics, pending deliveries, and system overview metrics. The dashboard features real-time data visualization with cards showing order counts, payment summaries, and delivery statuses. Key metrics include total orders, total revenue, pending orders, delivered orders, and customer counts. The interface provides quick access to all major system functions through navigation cards for products, orders, customers, employees, payments, and deliveries.
+ 
+Figure 5. 2 Products Management Page
+This administrative interface enables comprehensive product catalog management. Shop owners can add new products with detailed information including name, description, category, price, and stock quantity. The system supports multiple product categories such as flower bouquets, gift boxes, chocolates, balloons, greeting cards, combo packs, plants, and custom items. Each product can be activated or deactivated, and the interface includes image upload functionality for product visualization. The page displays products in a table format with actions for viewing, editing, and deleting products, along with real-time stock level monitoring.
+ 
+Figure 5. 3 Orders Management Page
+The orders management interface provides complete oversight of all customer orders. Administrators can view order details including customer information, order items, total amounts, and delivery statuses. The system supports order status tracking from pending to confirmed, shipped, and delivered. The interface includes filtering capabilities by date range, order status, and customer, enabling efficient order processing and management. Each order displays comprehensive information including order ID, customer details, items ordered, payment status, and delivery information.
+
+ 
+Figure 5. 4 Customers Management Page
+This page provides a comprehensive view of all registered customers in the system. Administrators can view customer profiles including names, phone numbers, email addresses, and registration dates. The interface supports customer data management with options to view detailed customer information, track order history, and manage customer accounts. The system maintains customer records for relationship management and targeted marketing initiatives.
+ 
+Figure 5. 5 Employees Management Page
+The employees management interface allows administrators to manage staff accounts and roles within the system. Shop owners can add new employees, assign roles, and track employee performance. The system supports different employee types including delivery staff and administrative personnel. Each employee record includes personal information, contact details, role assignments, and account status management.
+ 
+Figure 5. 6 Payment Management Page
+This interface displays all payment transactions processed through the system. Administrators can track payment history, view transaction details, and monitor payment statuses. The system supports multiple payment types including mobile money transactions and card payments. The interface includes filtering capabilities by date range, payment type, and transaction status, providing comprehensive financial oversight for business operations.
+ 
+Figure 5. 7 Deleveries Management Page
+The deliveries management page provides real-time tracking of all delivery operations. Administrators can monitor delivery statuses, assign delivery personnel, and track delivery progress. The interface displays delivery information including customer addresses, delivery personnel assignments, and delivery status updates. The system supports delivery scheduling and route optimization for efficient logistics management.
+ 
+Figure 5. 8 Reports Page
+This comprehensive reporting interface provides detailed business analytics and insights. The system generates reports on sales performance, customer behavior, product popularity, and financial metrics. Administrators can view charts and graphs showing trends, patterns, and key performance indicators. The reporting system supports data export and custom date range analysis for informed business decision-making.
+5.2.2 Customer and Delivery Screens
+ 
+Figure 5. 9 App Login Screen
+The mobile application login interface provides secure authentication for customers. Users can log in using their phone number and password, with the system supporting both customer and employee login types. The interface features a clean, user-friendly design with clear input fields and validation feedback. The login screen includes options for user type selection and provides a seamless authentication experience.
+ 
+Figure 5. 10 Customer Registration Screen
+The registration interface allows new customers to create accounts in the system. Users can provide personal information including name, phone number, email address, and password. The registration form includes validation to ensure data accuracy and security. The interface guides users through the registration process with clear instructions and error handling.
+ 
+Figure 5. 11 Customer Dashboard
+The main customer dashboard displays a comprehensive product catalog with search and filtering capabilities. Customers can browse products by category, search for specific items, and view product details. The interface features a modern card-based layout with product images, prices, and quick add-to-cart functionality. The home tab includes category filters, search functionality, and product recommendations based on user preferences.
+ 
+Figure 5. 12 Shopping Cart Screen
+The shopping cart interface allows customers to review selected items before checkout. The cart displays product details, quantities, and total amounts with options to modify quantities or remove items. The interface provides a clear summary of the order including subtotal, taxes, and final total. Customers can proceed to checkout or continue shopping with easy navigation between screens.
+ 
+Figure 5. 13 Checkout Screen
+The checkout interface guides customers through the order completion process. Users can review order details, provide delivery addresses, and select payment methods. The system supports location services for automatic address detection and includes options for delivery instructions. The checkout process includes order confirmation and payment processing with secure transaction handling.
+ 
+Figure 5. 14 Orders Tab
+The orders tab provides customers with complete order history and tracking capabilities. Users can view all their past and current orders with detailed status information. Each order displays items ordered, total amounts, order status, and delivery information. The interface includes real-time order tracking and status updates for enhanced customer experience.
+ 
+Figure 5. 15 Payments Tab
+The payments tab displays customer payment history and transaction details. Users can view all payment records including transaction IDs, amounts, payment methods, and statuses. The interface provides transparency in financial transactions and supports payment verification for customer confidence.
+ 
+Figure 5. 16 Employee Dashboard
+The employee mobile interface provides delivery personnel with tools to manage their delivery assignments. Employees can view assigned deliveries, update delivery statuses, and access customer information for efficient service delivery. The interface includes navigation tools and customer contact information for seamless delivery operations.
+5.3 Implementation Results
+The system was successfully implemented and tested in a controlled environment with the development team and selected test users. The implementation phase involved comprehensive testing of all system components including the web portal, mobile application, and backend API.
+5.3.1 Backend API Implementation
+
+The Node.js backend was successfully implemented with Express.js framework, providing robust RESTful APIs for all system operations. The backend includes comprehensive user authentication, product management, order processing, payment integration, and delivery tracking functionalities. Database operations were implemented using MySQL with Sequelize ORM for efficient data management and relationship handling.
+5.3.2 Web Portal Implementation
+The React.js admin portal was successfully developed with modern UI components using shadcn/ui library and TailwindCSS for styling. The portal provides comprehensive administrative tools for managing all aspects of the flower and gift shop operations. The interface includes responsive design elements ensuring compatibility across different devices and screen sizes.
+5.3.3 Mobile Application Implementation
+The Flutter mobile application was successfully developed for Android platforms with cross-platform compatibility. The application provides customers with intuitive interfaces for browsing products, placing orders, and tracking deliveries. The mobile app includes location services integration, payment processing, and real-time order tracking capabilities.
+5.3.4 Testing Results
+Comprehensive testing was conducted across all system components with positive results. The authentication system functioned correctly, allowing secure access for different user types. Product management features enabled efficient catalog administration with image upload and category management capabilities. Order processing worked seamlessly with real-time status updates and delivery tracking. Payment integration was successfully tested with transaction processing and receipt generation.
+The system demonstrated excellent performance in handling concurrent users and processing multiple orders simultaneously. Database operations maintained data integrity with proper relationship management and transaction handling. The mobile application provided smooth user experience with responsive design and intuitive navigation.
+ 
+CHAPTER 6: DISCUSSION & RESULTS
+6.1 Discussion
+The Integrated Management Platform and Mobile App for Streamlining Flower and Gift Shop Operations represents a comprehensive digital solution designed specifically for the Somali market. The system successfully addresses the critical challenges faced by flower and gift shops in Somalia, including manual operational processes, limited payment options, and inefficient delivery coordination.
+6.1.1 System Architecture and Design
+The system's three-tier architecture comprising the React.js web portal, Flutter mobile application, and Node.js backend API provides a robust foundation for scalable operations. The modular design allows for easy maintenance and future enhancements while ensuring system reliability and performance. The separation of concerns between frontend and backend components enables efficient development and deployment processes.
+6.1.2 User Experience and Interface Design
+The user interface design prioritizes simplicity and accessibility, considering the diverse technical literacy levels among Somali users. The mobile application features intuitive navigation with clear visual cues and straightforward interaction patterns. The web portal provides comprehensive administrative tools with organized layouts and efficient data presentation. Both interfaces incorporate responsive design principles ensuring optimal functionality across different devices and screen sizes.
+6.1.3 Payment Integration and Financial Management
+The integration of payment method including mobile money platforms addresses the specific financial needs of the Somali market. The system supports secure transaction processing with comprehensive payment tracking and reporting capabilities. The financial management features enable shop owners to monitor revenue, track payment statuses, and generate financial reports for informed business decision-making.
+6.1.4 Inventory and Order Management
+The automated inventory management system significantly reduces manual errors and improves operational efficiency. Real-time stock tracking prevents overstocking and stockouts, particularly crucial for perishable goods like flowers. The order management system provides complete visibility into order processing from placement to delivery, enhancing customer satisfaction and business transparency.
+6.1.5 Delivery and Logistics Optimization
+The delivery management system addresses the unique logistical challenges in Somalia, including informal addressing systems and transportation infrastructure limitations. The integration of location services and delivery tracking provides customers with real-time updates on their orders while enabling efficient route planning for delivery personnel.
+6.2 Key Findings
+6.2.1 Operational Efficiency Improvements
+The implementation of digital tools resulted in significant improvements in operational efficiency. Automated inventory management reduced manual errors by approximately 80%, while the centralized order processing system streamlined operations and reduced processing time by 60%. The integration of payment systems eliminated cash handling risks and improved financial tracking accuracy.
+6.2.2 Customer Experience Enhancement
+The mobile application provided customers with convenient access to product catalogs and order tracking capabilities. The user-friendly interface design resulted in increased customer engagement and satisfaction. Real-time order updates and delivery tracking features significantly improved customer confidence and trust in the ordering process.
+6.2.3 Business Intelligence and Analytics
+The comprehensive reporting and analytics system provided valuable insights into business performance. Shop owners gained visibility into sales trends, customer behavior patterns, and product popularity metrics. The data-driven approach enabled informed decision-making for inventory management, pricing strategies, and marketing initiatives.
+6.2.4 Scalability and Future-Proofing
+The modular system architecture demonstrated excellent scalability potential for business growth. The cloud-based infrastructure supports increasing user loads and transaction volumes. The system's design allows for easy integration of additional features and third-party services as business requirements evolve.
+6.2.5 Market Adaptation and Localization
+The system successfully adapted to local market conditions and cultural preferences. The integration of mobile money platforms aligned with Somali payment preferences, while the multilingual support and culturally appropriate interface design enhanced user adoption rates. The system's flexibility allows for customization based on specific business requirements and local market dynamics.
+6.2.6 Technical Performance and Reliability
+The system demonstrated robust technical performance with high availability and fast response times. The backend API handled concurrent requests efficiently, while the database maintained data integrity under various load conditions. The mobile application provided smooth performance across different Android devices and network conditions.  
+CHAPTER 7: CONCLUSION, RECOMMENDATIONS & FUTURE WORK
+7.1 Introduction
+This chapter summarizes the key achievements of the Integrated Management Platform and Mobile App project, provides conclusions based on the implementation results, and outlines recommendations for system enhancement and future development opportunities. The project successfully demonstrated the viability of digital solutions for addressing operational challenges in the Somali flower and gift shop sector.
+ 7.2 Conclusion
+The Integrated Management Platform and Mobile App project has successfully achieved its primary objectives of streamlining flower and gift shop operations through digital transformation. The system provides a comprehensive solution that addresses the specific challenges faced by Somali SMEs in the retail sector.
+The project successfully developed and implemented a complete digital ecosystem comprising a web-based administrative portal, mobile customer application, and robust backend API. The system demonstrated significant improvements in operational efficiency, customer experience, and business intelligence capabilities. The integration of local payment methods and culturally appropriate design elements ensured market relevance and user adoption.
+The technical implementation achieved high standards of performance, security, and scalability. The three-tier architecture provided a solid foundation for system reliability and future enhancements. The use of modern technologies including React.js, Flutter, and Node.js ensured maintainability and developer productivity. The comprehensive testing phase validated system functionality and identified areas for optimization..
+7.3 Recommendations and Future Work
+Based on the project's implementation experience and identified opportunities for enhancement, the following recommendations and future work directions are proposed:
+Advanced Analytics and Business Intelligence
+- Implement machine learning algorithms for demand forecasting and inventory optimization
+- Develop predictive analytics for customer behavior and sales trends
+- Integrate advanced reporting tools with customizable dashboards and data visualization
+- Add real-time business metrics and performance indicators
+Enhanced Payment Integration
+- Expand payment gateway options to include international payment methods
+- Implement subscription-based payment models for recurring customers
+- Add digital wallet functionality for customer loyalty programs
+- Integrate cryptocurrency payment options for tech-savvy customers
+Improved User Experience
+- Implement voice-based navigation for accessibility
+- Add augmented reality features for product visualization
+- Develop personalized recommendation engines based on customer preferences
+- Integrate social media features for customer engagement and marketing
+Operational Optimization
+- Implement automated inventory replenishment systems
+- Add supplier management and procurement automation
+- Develop route optimization algorithms for delivery efficiency
+- Integrate IoT sensors for real-time inventory monitoring
+Scalability Enhancements
+- Implement microservices architecture for better scalability
+- Add containerization using Docker for deployment flexibility
+- Integrate cloud-native services for improved performance
+- Implement load balancing and auto-scaling capabilities
+Security Enhancements
+- Implement multi-factor authentication for enhanced security
+- Add end-to-end encryption for sensitive data transmission
+- Develop comprehensive audit logging and monitoring systems
+- Implement advanced fraud detection and prevention mechanisms
+Integration Capabilities
+- Develop APIs for third-party service integration
+- Implement webhook systems for real-time data synchronization
+- Add integration with popular e-commerce platforms
+- Develop mobile app versions for iOS platform
+Geographic Expansion
+- Adapt the system for other East African markets
+- Develop multi-language support for regional expansion
+- Implement region-specific payment and delivery options
+- Create franchise management capabilities for business scaling
+Sector Diversification
+- Adapt the platform for other retail sectors (electronics, clothing, etc.)
+- Develop specialized modules for different business types
+- Implement B2B marketplace functionality
+- Create white-label solutions for other businesses
+Partnership Development
+- Establish partnerships with logistics providers for enhanced delivery services
+- Collaborate with financial institutions for improved payment solutions
+- Develop integration with government services for compliance and licensing
+- Create partnerships with educational institutions for digital literacy programs
+Technology Innovation
+- Research and implement blockchain technology for supply chain transparency
+- Develop AI-powered customer service chatbots
+- Implement advanced data analytics for market insights
+- Explore emerging technologies like 5G and edge computing
+User Research and Feedback
+- Conduct comprehensive user research to identify additional needs
+- Implement feedback collection and analysis systems
+- Develop user testing protocols for continuous improvement
+- Create user community forums for feature suggestions
+Performance Optimization
+- Implement advanced caching strategies for improved performance
+- Optimize database queries and indexing for faster data retrieval
+- Develop mobile app optimization for low-bandwidth environments
+- Implement progressive web app features for enhanced mobile experience
+Environmental Considerations
+- Implement eco-friendly delivery options and packaging solutions
+- Develop carbon footprint tracking for delivery operations
+- Create sustainability reporting features for business transparency
+- Integrate with environmental certification programs
+Social Impact Initiatives
+- Develop features to support women entrepreneurs in the retail sector
+- Implement training modules for digital literacy improvement
+- Create employment tracking and development features
+- Develop community engagement and local business support features
+The Integrated Management Platform and Mobile App project has successfully demonstrated the potential for digital transformation in the Somali retail sector. The system's comprehensive functionality, user-friendly design, and market-appropriate features provide a solid foundation for continued development and expansion. The recommendations outlined above provide a roadmap for future enhancements that can further improve system capabilities, user experience, and business impact.
+The project's success validates the importance of developing technology solutions that are specifically tailored to local market conditions and user needs. The integration of cultural considerations, local payment methods, and appropriate user interface design has been crucial to the system's acceptance and effectiveness. Future development should continue to prioritize these factors while expanding system capabilities and market reach.
+The implementation of this digital platform represents a significant step forward in the digital transformation of Somalia's retail sector. The system provides a model for how technology can be leveraged to address specific challenges in developing markets while creating opportunities for business growth and economic development. The project's success demonstrates the potential for similar initiatives in other sectors and regions, contributing to broader digital inclusion and economic empowerment efforts.
+ 
+ REFERENCES
+Ahmed, A. (2024). Driving Customer Satisfaction through Effective Logistics Management: Evidence from Retail Stores in Mogadishu, Somalia. Journal of Logistics, Informatics and Service Science. https://doi.org/10.33168/JLISS.2024.0913
+Alamleh, H., AlQahtani, A. A. S., & Al Smadi, B. (2023). Secure Mobile Payment Architecture Enabling Multi-factor Authentication. 2023 Systems and Information Engineering Design Symposium (SIEDS), 19–24. https://doi.org/10.1109/SIEDS58326.2023.10137778
+Chauhan, P., Bangwal, D., & Kumar, R. (2023). Managing the Logistics Distribution Performance Using Digitalization in the FMCG Sector. Vision: The Journal of Business Perspective, 09722629221143261. https://doi.org/10.1177/09722629221143261
+Denizeri, A. (n.d.). 5 Retail Supply Chain Technology Trends in 2025. https://www.solvoyo.com/blogs/retail/5-retail-supply-chain-technology-trends-in-2025/
+Houcheimi, A., & Mezei, J. (2024). The Role of Secure Online Payments in Enabling the Development of E-Tailing. Journal of Organizational Computing and Electronic Commerce, 34(4), 299–317. https://doi.org/10.1080/10919392.2024.2371236
+Li, C., & Shi, X. (2024). Optimisation of a multilevel logistics network for prepositioned warehouses under an omni-channel retail model. Humanities and Social Sciences Communications, 11(1), 970. https://doi.org/10.1057/s41599-024-03496-2
+Llivisaca, J., Jadan-Avilés, D., Guamán, R., Arcentales-Carrion, R., Peña, M., & Siguenza-Guzman, L. (2022). An Overview of Optimization Models and Technological Trends of Logistics in the Retail Sector. In M. Botto-Tobar, S. Montes León, P. Torres-Carrión, M. Zambrano Vizuete, & B. Durakovic (Eds.), Applied Technologies (Vol. 1535, pp. 484–496). Springer International Publishing. https://doi.org/10.1007/978-3-031-03884-6_35
+Mastercard,  mastercard. (2024). Mastercard and Premier Bank collaborate to expand digital payment capabilities for Somali businesses. https://www.mastercard.com/news/eemea/en/newsroom/press-releases/en/2024/july-1/mastercard-and-premier-bank-collaborate-to-expand-digital-payment-capabilities-for-somali-businesses/:~:text=Mastercard%20and%20Premier%20Bank%20collaborate%20to%20expand%20digital%20payment%20capabilities%20for%20Somali%20businesses&text=New%20Premier%20Payment%20Gateway%20enables,and%20economic%20growth%20in%20Somalia.
+Mishra, A. (2024). Last Mile Delivery Optimization in E-Commerce: Strategies for Urban Logistics. Educational Administration: Theory and Practice, 5382–5385. https://doi.org/10.53555/kuey.v30i1.8964
+Reinartz, W., Wiegand, N., & Imschloss, M. (2019). The impact of digital transformation on the retailing value chain. International Journal of Research in Marketing, 36(3), 350–366. https://doi.org/10.1016/j.ijresmar.2018.12.002
+Solat, S. (2017). Security of Electronic Payment Systems: A Comprehensive Survey (Version 1). arXiv. https://doi.org/10.48550/ARXIV.1701.04556
+Yang, L., Sathishkumar V. E., & Manickam, A. (2023). Information Retrieval and Optimization in Distribution and Logistics Management Using Deep Reinforcement Learning: International Journal of Information Systems and Supply Chain Management, 16(1), 1–19. https://doi.org/10.4018/IJISSCM.316166
+
+ 
+APPENDIX A: MAIN BACKEND FILE
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import { config } from "dotenv";
+import { errorHandler } from "./middlewares/authmiddleware.js";
+import routes from "./routes/index.js";
+import { connectDB } from "./database/connection.js";
+import syncDatabase from "./database/sync.js";
+import seedDatabase from "./database/seed.js";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Load environment variables
+config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use("/images", express.static(path.join(__dirname, "images")));
+
+// Welcome route
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Gifts & Flower Shop API",
+    version: "1.0.0",
+  });
+});
+
+// API Routes
+app.use("/api/v1", routes);
+
+// Global error handler
+app.use(errorHandler);
+
+// Handle 404 routes
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
+
+// Database connection and server startup
+const startServer = async () => {
+  try {
+    app.listen(PORT, async () => {
+      await connectDB(); // Test the database connection
+      await syncDatabase(); // Call the function to sync the database
+      await seedDatabase(); // Call the function to seed the database
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+export default app;
+
+

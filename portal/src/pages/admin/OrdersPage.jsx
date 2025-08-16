@@ -11,6 +11,35 @@ import { useApiRequest } from "@/hooks/useApiRequest";
 import { Plus, Eye, Edit, Trash2, Filter, Calendar, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format, startOfDay, endOfDay, startOfMonth, endOfMonth, subDays } from "date-fns";
+import { z } from "zod";
+
+// Zod schema for order validation
+const orderSchema = z.object({
+  customer_id: z.string()
+    .min(1, "Customer is required")
+    .refine((val) => !isNaN(Number(val)), "Customer ID must be a valid number"),
+  status: z.enum(["pending", "confirmed", "delivered", "cancelled", "returned"]).optional(),
+  payment_status: z.enum(["pending", "paid", "failed"]).optional(),
+});
+
+const orderItemSchema = z.object({
+  product_id: z.string()
+    .min(1, "Product is required")
+    .refine((val) => !isNaN(Number(val)), "Product ID must be a valid number"),
+  quantity: z.string()
+    .min(1, "Quantity is required")
+    .refine((val) => !isNaN(Number(val)), "Quantity must be a valid number")
+    .refine((val) => Number(val) > 0, "Quantity must be greater than 0")
+    .refine((val) => Number(val) <= 999999, "Quantity cannot exceed 999,999")
+    .refine((val) => Number.isInteger(Number(val)), "Quantity must be a whole number"),
+});
+
+const orderFormSchema = z.object({
+  order: orderSchema,
+  items: z.array(orderItemSchema)
+    .min(1, "At least one order item is required")
+    .max(50, "Cannot add more than 50 items to an order"),
+});
 
 export function OrdersPage() {
   const { toast } = useToast();
@@ -52,7 +81,7 @@ export function OrdersPage() {
     const res = await request({ method: "get", url: "/customers" });
     if (res.success) setCustomers(res.data);
     } catch (e) {
-      toast({ title: "Failed to load customers", variant: "destructive" });
+      toast({ title: "processing",  });
     }
   };
   const fetchProducts = async () => {
@@ -225,45 +254,6 @@ export function OrdersPage() {
     e.preventDefault();
     setValidationErrors({});
 
-    // Validate
-    if (!orderForm.customer_id) {
-      setValidationErrors((v) => ({ ...v, customer_id: "Customer is required" }));
-      return;
-    }
-    
-    if (editingOrder) {
-      // Update order - only status and payment_status
-      if (!orderForm.status) {
-        setValidationErrors((v) => ({ ...v, status: "Status is required" }));
-        return;
-      }
-      if (!orderForm.payment_status) {
-        setValidationErrors((v) => ({ ...v, payment_status: "Payment status is required" }));
-        return;
-      }
-    } else {
-      // Create order
-    if (orderItems.length === 0) {
-      setValidationErrors((v) => ({ ...v, items: "At least one order item is required" }));
-      return;
-    }
-    for (let i = 0; i < orderItems.length; i++) {
-      const item = orderItems[i];
-      if (!item.product_id) {
-        setValidationErrors((v) => ({ ...v, [`item_${i}_product_id`]: "Product is required" }));
-        return;
-      }
-      if (!item.quantity || Number(item.quantity) < 1) {
-        setValidationErrors((v) => ({ ...v, [`item_${i}_quantity`]: "Quantity must be at least 1" }));
-        return;
-      }
-      if (Number(item.quantity) > getProductStock(item.product_id)) {
-        setValidationErrors((v) => ({ ...v, [`item_${i}_quantity`]: "Exceeds available stock" }));
-        return;
-      }
-    }
-    }
-
     try {
       if (editingOrder) {
         // Update order - only status and payment_status
@@ -271,6 +261,9 @@ export function OrdersPage() {
           status: orderForm.status,
           payment_status: orderForm.payment_status
         };
+        
+        // Validate update data
+        orderSchema.partial().parse(updateData);
         
         await request({
           method: "put",
@@ -280,28 +273,59 @@ export function OrdersPage() {
         toast({ title: "Order updated successfully" });
         setEditDialogOpen(false);
       } else {
-        // Create order
-    const payload = {
-      order: { customer_id: Number(orderForm.customer_id) },
-      items: orderItems.map((item) => ({
-        product_id: Number(item.product_id),
-        quantity: Number(item.quantity),
-      })),
-    };
+        // Create order - validate full form
+        const formData = {
+          order: { customer_id: orderForm.customer_id },
+          items: orderItems
+        };
         
-      await request({
-        method: "post",
-        url: "/orders/bulk",
-        data: payload,
-      });
-      toast({ title: "Order created successfully" });
-      setAddDialogOpen(false);
+        // Validate with Zod schema
+        orderFormSchema.parse(formData);
+        
+        // Additional stock validation
+        for (let i = 0; i < orderItems.length; i++) {
+          const item = orderItems[i];
+          if (Number(item.quantity) > getProductStock(item.product_id)) {
+            setValidationErrors((v) => ({ ...v, [`item_${i}_quantity`]: "Exceeds available stock" }));
+            return;
+          }
+        }
+        
+        const payload = {
+          order: { customer_id: Number(orderForm.customer_id) },
+          items: orderItems.map((item) => ({
+            product_id: Number(item.product_id),
+            quantity: Number(item.quantity),
+          })),
+        };
+        
+        await request({
+          method: "post",
+          url: "/orders/bulk",
+          data: payload,
+        });
+        toast({ title: "Order created successfully" });
+        setAddDialogOpen(false);
       }
       resetForm();
       fetchOrders();
     } catch (error) {
-      // Handle validation errors from backend
-      if (error.response?.data?.message) {
+      // Handle Zod validation errors
+      if (error.errors) {
+        const errors = {};
+        error.errors.forEach((err) => {
+          if (err.path[0] === 'order') {
+            errors[err.path[1]] = err.message;
+          } else if (err.path[0] === 'items') {
+            const itemIndex = err.path[1];
+            const field = err.path[2];
+            errors[`item_${itemIndex}_${field}`] = err.message;
+          } else {
+            errors[err.path[0]] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+      } else if (error.response?.data?.message) {
         toast({ 
           title: "Validation Error", 
           description: error.response.data.message,
@@ -565,9 +589,9 @@ export function OrdersPage() {
                       <Button size="icon" variant="ghost" onClick={() => navigate(`/orders/${order.order_id}`)}>
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button size="icon" variant="ghost" onClick={() => handleEditOrder(order)}>
+                      {/* <Button size="icon" variant="ghost" onClick={() => handleEditOrder(order)}>
                         <Edit className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
                       <Button size="icon" variant="ghost" onClick={() => handleDeleteOrder(order)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>

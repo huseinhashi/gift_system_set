@@ -5,6 +5,8 @@ import '../providers/auth_provider.dart';
 class OrderService {
   static final ApiClient _apiClient = ApiClient();
 
+  /// Creates an order and processes payment in a single transaction
+  /// If payment fails, the order is automatically rolled back and stock is restored
   static Future<Map<String, dynamic>> createOrder({
     required List<CartItem> items,
     required double totalAmount,
@@ -14,97 +16,48 @@ class OrderService {
     double? lng,
   }) async {
     try {
-      // Prepare order data
+      // Prepare order data with payment information
       final orderData = {
-        'order': {
-          'customer_id': customerId,
-          'lat': lat,
-          'lng': lng,
-        },
+        'order': {'customer_id': customerId, 'lat': lat, 'lng': lng},
         'items': items
-            .map((item) => {
-                  'product_id': item.productId,
-                  'quantity': item.quantity,
-                })
+            .map(
+              (item) => {
+                'product_id': item.productId,
+                'quantity': item.quantity,
+              },
+            )
             .toList(),
+        'payment': {'phone': customerPhone, 'amount': totalAmount},
       };
 
-      // Create order with items
-      final orderResponse = await _apiClient.request(
+      // Create order with payment processing in a single transaction
+      final response = await _apiClient.request(
         method: 'POST',
-        path: '/orders/customer/bulk',
+        path: '/orders/customer/bulk/payment',
         data: orderData,
       );
 
-      if (!orderResponse['success']) {
-        return {
-          'success': false,
-          'message': orderResponse['message'] ?? 'Failed to create order',
-        };
-      }
-
-      final order = orderResponse['data'];
-      final orderId = order['order_id'];
-      // Process payment
-      final paymentResponse = await processPayment(
-        orderId: orderId,
-        amount: totalAmount,
-        customerPhone: customerPhone,
-      );
-
-      if (paymentResponse['success']) {
-        // Payment successful - backend already handled order status and payment record
-        return {
-          'success': true,
-          'message': 'Order created and payment successful',
-          'data': {
-            'order': order,
-            'payment': paymentResponse,
-          },
-        };
-      } else {
-        // Payment failed - order remains pending
+      if (response['success']) {
+        // Order created and payment successful
         return {
           'success': true,
           'message':
-              'Order created but payment failed: ${paymentResponse['message']}',
-          'data': {
-            'order': order,
-            'payment': paymentResponse,
-          },
+              response['message'] ?? 'Order created and payment successful',
+          'data': {'order': response['data']},
+        };
+      } else {
+        // Payment failed - order was not created (rolled back)
+        return {
+          'success': false,
+          'message':
+              response['message'] ?? 'Payment failed and order was not created',
+          'data': {'order': null},
         };
       }
     } catch (e) {
       return {
         'success': false,
         'message': 'Error creating order: ${e.toString()}',
-      };
-    }
-  }
-
-  static Future<Map<String, dynamic>> processPayment({
-    required int orderId,
-    required double amount,
-    required String customerPhone,
-  }) async {
-    try {
-      final paymentData = {
-        'orderId': orderId,
-        'amount': amount,
-        'phone': customerPhone,
-      };
-
-      final response = await _apiClient.request(
-        method: 'POST',
-        path: '/payments/process',
-        data: paymentData,
-      );
-
-      return response;
-    } catch (e) {
-      return {
-        'success': false,
-        'message': 'Payment processing failed: ${e.toString()}',
       };
     }
   }

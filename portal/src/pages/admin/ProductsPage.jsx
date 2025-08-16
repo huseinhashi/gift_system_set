@@ -37,8 +37,19 @@ const initialForm = {
 
 // Zod schema for product validation (matches backend)
 const productSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(150, "Name cannot exceed 150 characters"),
-  description: z.string().optional(),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters")
+    .max(150, "Name cannot exceed 150 characters")
+    .regex(/^[a-zA-Z0-9\s\-_\.]+$/, "Name can only contain letters, numbers, spaces, hyphens, underscores, and dots")
+    .refine((val) => !/^\d/.test(val), "Name cannot start with a number")
+    .refine((val) => !/^\s/.test(val), "Name cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Name cannot end with a space")
+    .refine((val) => !/\s{2,}/.test(val), "Name cannot contain consecutive spaces"),
+  description: z.string()
+    .optional()
+    .refine((val) => !val || val.length <= 500, "Description cannot exceed 500 characters")
+    .refine((val) => !val || !/^\s/.test(val), "Description cannot start with a space")
+    .refine((val) => !val || !/\s$/.test(val), "Description cannot end with a space"),
   category: z.enum([
     "flower_bouquet",
     "gift_box",
@@ -49,8 +60,35 @@ const productSchema = z.object({
     "plants",
     "custom",
   ]),
-  price: z.preprocess((v) => Number(v), z.number().gt(0, "Price must be greater than 0")),
-  stock_quantity: z.preprocess((v) => v === '' ? 0 : Number(v), z.number().int().gt(0, "Stock must be greater than 0").optional()),
+  price: z.preprocess(
+    (v) => {
+      if (typeof v === 'string') {
+        const parsed = parseFloat(v);
+        return isNaN(parsed) ? v : parsed;
+      }
+      return v;
+    },
+    z.number()
+      .gt(0, "Price must be greater than 0")
+      .max(999999.99, "Price cannot exceed $999,999.99")
+      .refine((val) => Number.isFinite(val), "Price must be a valid number")
+  ),
+  stock_quantity: z.preprocess(
+    (v) => {
+      if (v === '' || v === null || v === undefined) return 0;
+      if (typeof v === 'string') {
+        const parsed = parseInt(v, 10);
+        return isNaN(parsed) ? v : parsed;
+      }
+      return v;
+    },
+    z.number()
+      .int("Stock quantity must be a whole number")
+      .min(0, "Stock quantity cannot be negative")
+      .max(999999, "Stock quantity cannot exceed 999,999")
+      .refine((val) => Number.isInteger(val), "Stock quantity must be a whole number")
+      .refine((val) => val >= 0, "Stock quantity must be non-negative")
+  ),
   is_active: z.boolean().optional(),
   image: z.any().optional(), // image is handled separately
 });

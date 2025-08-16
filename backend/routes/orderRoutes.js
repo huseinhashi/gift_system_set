@@ -6,6 +6,7 @@ import {
   updateOrder,
   deleteOrder,
   createOrderWithItems,
+  createOrderWithPayment,
   getCustomerOrders,
   getCustomerOrderById,
   updateCustomerOrder,
@@ -65,8 +66,17 @@ router.post(
   createOrderWithItems
 );
 
+// Bulk create order with payment (admin/staff only)
+router.post(
+  "/bulk/payment",
+  authenticateAdmin,
+  restrictToAdmin("admin", "staff"),
+  createOrderWithPayment
+);
+
 // Customer routes
 router.post("/customer/bulk", authenticateCustomer, createOrderWithItems);
+router.post("/customer/bulk/payment", authenticateCustomer, createOrderWithPayment);
 
 // Customer order management
 router.get("/customer/orders", authenticateCustomer, getCustomerOrders);

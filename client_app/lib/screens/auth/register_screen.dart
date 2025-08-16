@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/api_client.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -33,13 +34,155 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
+      // Additional custom validation
+      final name = _nameController.text.trim();
+      final phone = _phoneController.text.trim();
+      final password = _passwordController.text;
+      final address = _addressController.text.trim();
+
+      // Name validation
+      if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(name)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Name can only contain letters and spaces'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (RegExp(r'^\d').hasMatch(name)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Name cannot start with a number'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (RegExp(r'^\s').hasMatch(name)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Name cannot start with a space'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (RegExp(r'\s$').hasMatch(name)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Name cannot end with a space'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (RegExp(r'\s{2,}').hasMatch(name)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Name cannot contain consecutive spaces'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Phone validation
+      if (!RegExp(r'^[\d\s\-\+\(\)]+$').hasMatch(phone)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (phone.length < 7) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Phone number must be at least 7 characters'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (phone.length > 20) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Phone number cannot exceed 20 characters'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Address validation
+      if (address.isNotEmpty) {
+        if (address.length > 500) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Address cannot exceed 500 characters'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        if (RegExp(r'^\s').hasMatch(address)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Address cannot start with a space'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+
+        if (RegExp(r'\s$').hasMatch(address)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Address cannot end with a space'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+      }
+
+      // Password validation
+      if (!RegExp(r'^(?=.*[a-zA-Z])').hasMatch(password)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password must contain at least one letter'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      if (!RegExp(r'^(?=.*\d)').hasMatch(password)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password must contain at least one number'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final success = await authProvider.registerCustomer(
-        _nameController.text.trim(),
-        _phoneController.text.trim(),
-        _passwordController.text,
-        _addressController.text.trim(),
+        name,
+        phone,
+        password,
+        address,
       );
 
       if (success && mounted) {
@@ -129,9 +272,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+                          ],
+                          maxLength: 100,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your name';
+                            }
+                            final name = value.trim();
+                            if (name.length < 2) {
+                              return 'Name must be at least 2 characters';
+                            }
+                            if (name.length > 100) {
+                              return 'Name cannot exceed 100 characters';
+                            }
+                            if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(name)) {
+                              return 'Name can only contain letters and spaces';
+                            }
+                            if (RegExp(r'^\d').hasMatch(name)) {
+                              return 'Name cannot start with a number';
+                            }
+                            if (RegExp(r'^\s').hasMatch(name)) {
+                              return 'Name cannot start with a space';
+                            }
+                            if (RegExp(r'\s$').hasMatch(name)) {
+                              return 'Name cannot end with a space';
+                            }
+                            if (RegExp(r'\s{2,}').hasMatch(name)) {
+                              return 'Name cannot contain consecutive spaces';
                             }
                             return null;
                           },
@@ -148,12 +317,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[\d\s\-\+\(\)]')),
+                          ],
+                          maxLength: 20,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your phone number';
                             }
-                            if (value.length < 5) {
-                              return 'Please enter a valid phone number';
+                            final phone = value.trim();
+                            if (phone.length < 7) {
+                              return 'Phone number must be at least 7 characters';
+                            }
+                            if (phone.length > 20) {
+                              return 'Phone number cannot exceed 20 characters';
+                            }
+                            if (!RegExp(r'^[\d\s\-\+\(\)]+$').hasMatch(phone)) {
+                              return 'Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses';
                             }
                             return null;
                           },
@@ -169,9 +349,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          maxLength: 500,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your address';
+                            }
+                            final address = value.trim();
+                            if (address.length > 500) {
+                              return 'Address cannot exceed 500 characters';
+                            }
+                            if (RegExp(r'^\s').hasMatch(address)) {
+                              return 'Address cannot start with a space';
+                            }
+                            if (RegExp(r'\s$').hasMatch(address)) {
+                              return 'Address cannot end with a space';
                             }
                             return null;
                           },
@@ -202,12 +393,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                          ],
+                          maxLength: 100,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a password';
                             }
                             if (value.length < 6) {
                               return 'Password must be at least 6 characters';
+                            }
+                            if (value.length > 100) {
+                              return 'Password cannot exceed 100 characters';
+                            }
+                            if (!RegExp(r'^(?=.*[a-zA-Z])').hasMatch(value)) {
+                              return 'Password must contain at least one letter';
+                            }
+                            if (!RegExp(r'^(?=.*\d)').hasMatch(value)) {
+                              return 'Password must contain at least one number';
+                            }
+                            if (RegExp(r'^\s').hasMatch(value)) {
+                              return 'Password cannot start with a space';
+                            }
+                            if (RegExp(r'\s$').hasMatch(value)) {
+                              return 'Password cannot end with a space';
+                            }
+                            if (RegExp(r'\s').hasMatch(value)) {
+                              return 'Password cannot contain spaces';
                             }
                             return null;
                           },
@@ -238,6 +451,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                          ],
+                          maxLength: 100,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please confirm your password';

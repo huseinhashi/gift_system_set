@@ -10,10 +10,33 @@ import { z } from "zod";
 
 // Inline employeeSchema for frontend validation
 const employeeSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name cannot exceed 100 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  password_hash: z.string().min(6, "password_hash must be at least 6 characters").max(100, "password_hash cannot exceed 100 characters"),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name cannot exceed 100 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces")
+    .refine((val) => !/^\d/.test(val), "Name cannot start with a number")
+    .refine((val) => !/^\s/.test(val), "Name cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Name cannot end with a space")
+    .refine((val) => !/\s{2,}/.test(val), "Name cannot contain consecutive spaces"),
+  email: z.string()
+    .email("Please enter a valid email address")
+    .refine((val) => val.length <= 255, "Email cannot exceed 255 characters")
+    .refine((val) => !/^\s/.test(val), "Email cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Email cannot end with a space")
+    .refine((val) => !/\s/.test(val), "Email cannot contain spaces"),
+  phone: z.string()
+    .optional()
+    .refine((val) => !val || /^[\d\s\-\+\(\)]+$/.test(val), "Phone can only contain numbers, spaces, hyphens, plus signs, and parentheses")
+    .refine((val) => !val || val.length >= 7, "Phone number must be at least 7 characters")
+    .refine((val) => !val || val.length <= 20, "Phone number cannot exceed 20 characters"),
+  password_hash: z.string()
+    .min(6, "Password must be at least 6 characters")
+    .max(100, "Password cannot exceed 100 characters")
+    .refine((val) => /^(?=.*[a-zA-Z])/.test(val), "Password must contain at least one letter")
+    .refine((val) => /^(?=.*\d)/.test(val), "Password must contain at least one number")
+    .refine((val) => !/^\s/.test(val), "Password cannot start with a space")
+    .refine((val) => !/\s$/.test(val), "Password cannot end with a space")
+    .refine((val) => !/\s/.test(val), "Password cannot contain spaces"),
   is_active: z.boolean().optional(),
 });
 

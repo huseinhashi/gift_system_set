@@ -70,6 +70,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
+  /// Processes the checkout by creating an order and processing payment in a single transaction
+  /// If payment fails, the order is automatically rolled back and stock is restored
+  /// and the cart is not cleared, allowing the user to try again
   Future<void> _processCheckout() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
@@ -117,13 +120,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Navigator.of(context).pushReplacementNamed('/customer_dashboard');
         }
       } else {
-        // Show error message
+        // Show error message - order was not created due to payment failure
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result['message']),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
           ),
         );
+
+        // Don't clear cart since order was not created
+        // User can try again or modify their cart
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -147,10 +154,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: const CustomerAppBar(
-        title: 'Checkout',
-        showCart: false,
-      ),
+      appBar: const CustomerAppBar(title: 'Checkout', showCart: false),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -170,10 +174,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.person,
-                            color: theme.colorScheme.primary,
-                          ),
+                          Icon(Icons.person, color: theme.colorScheme.primary),
                           const SizedBox(width: 8),
                           Text(
                             'Customer Information',
@@ -287,14 +288,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
-                            onPressed:
-                                _isGettingLocation ? null : _getCurrentLocation,
+                            onPressed: _isGettingLocation
+                                ? null
+                                : _getCurrentLocation,
                             icon: _isGettingLocation
                                 ? const SizedBox(
                                     width: 20,
                                     height: 20,
                                     child: CircularProgressIndicator(
-                                        strokeWidth: 2),
+                                      strokeWidth: 2,
+                                    ),
                                   )
                                 : const Icon(Icons.my_location, size: 20),
                             label: Text(
@@ -321,7 +324,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                  color: Colors.green.withOpacity(0.3)),
+                                color: Colors.green.withOpacity(0.3),
+                              ),
                             ),
                             child: Row(
                               children: [
@@ -351,8 +355,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         decoration: BoxDecoration(
                           color: Colors.blue.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: Colors.blue.withOpacity(0.3)),
+                          border: Border.all(
+                            color: Colors.blue.withOpacity(0.3),
+                          ),
                         ),
                         child: Row(
                           children: [

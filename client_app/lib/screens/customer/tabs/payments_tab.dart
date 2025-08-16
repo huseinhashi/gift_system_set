@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../services/customer_order_service.dart';
-import '../../../services/order_service.dart';
 import '../../../providers/auth_provider.dart';
 
 class PaymentsTab extends StatefulWidget {
@@ -55,9 +54,11 @@ class _PaymentsTabState extends State<PaymentsTab> {
   List<dynamic> get _filteredPayments {
     if (_filterStatus == 'all') return _payments;
     return _payments
-        .where((payment) =>
-            (payment['payment_type'] ?? '').toString().toLowerCase() ==
-            _filterStatus)
+        .where(
+          (payment) =>
+              (payment['payment_type'] ?? '').toString().toLowerCase() ==
+              _filterStatus,
+        )
         .toList();
   }
 
@@ -127,64 +128,79 @@ class _PaymentsTabState extends State<PaymentsTab> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _error != null
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.error_outline,
-                                  size: 64, color: Colors.red),
-                              const SizedBox(height: 16),
-                              Text(_error!,
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 16, color: Colors.red)),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: _fetchPayments,
-                                child: const Text('Retry'),
-                              ),
-                            ],
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: Colors.red,
                           ),
-                        ),
-                      )
-                    : _filteredPayments.isEmpty
-                        ? Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.payment_outlined,
-                                      size: 64, color: Colors.grey[400]),
-                                  const SizedBox(height: 16),
-                                  Text('No payments found',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 16,
-                                          color: Colors.grey[600])),
-                                  if (_filterStatus != 'all')
-                                    TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _filterStatus = 'all';
-                                        });
-                                      },
-                                      child: Text('Reset filter',
-                                          style: GoogleFonts.poppins(
-                                              color:
-                                                  theme.colorScheme.primary)),
-                                    ),
-                                ],
+                          const SizedBox(height: 16),
+                          Text(
+                            _error!,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _fetchPayments,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : _filteredPayments.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.payment_outlined,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No payments found',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          if (_filterStatus != 'all')
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _filterStatus = 'all';
+                                });
+                              },
+                              child: Text(
+                                'Reset filter',
+                                style: GoogleFonts.poppins(
+                                  color: theme.colorScheme.primary,
+                                ),
                               ),
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: _filteredPayments.length,
-                            itemBuilder: (context, index) {
-                              final payment = _filteredPayments[index];
-                              return _buildPaymentCard(payment, theme);
-                            },
-                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _filteredPayments.length,
+                    itemBuilder: (context, index) {
+                      final payment = _filteredPayments[index];
+                      return _buildPaymentCard(payment, theme);
+                    },
+                  ),
           ),
         ],
       ),
@@ -216,8 +232,9 @@ class _PaymentsTabState extends State<PaymentsTab> {
   }
 
   Widget _buildPaymentCard(dynamic payment, ThemeData theme) {
-    final paymentType =
-        (payment['payment_type'] ?? 'api').toString().toLowerCase();
+    final paymentType = (payment['payment_type'] ?? 'api')
+        .toString()
+        .toLowerCase();
     final transactionDate = payment['transaction_date'] ?? '';
     final amount = _parseAmount(payment['amount']);
     final order = payment['order'] ?? {};
@@ -233,26 +250,40 @@ class _PaymentsTabState extends State<PaymentsTab> {
           backgroundColor: _getPaymentTypeColor(paymentType),
           child: Icon(Icons.payment, color: Colors.white),
         ),
-        title: Text('Payment #${payment['payment_id']}',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Payment #${payment['payment_id']}',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Type: ${_capitalize(paymentType)}',
-                style: GoogleFonts.poppins(
-                    color: _getPaymentTypeColor(paymentType))),
+            Text(
+              'Type: ${_capitalize(paymentType)}',
+              style: GoogleFonts.poppins(
+                color: _getPaymentTypeColor(paymentType),
+              ),
+            ),
             Text('Order #$orderId', style: GoogleFonts.poppins(fontSize: 12)),
             if (transactionDate != null &&
                 transactionDate.toString().isNotEmpty)
-              Text('Date: ${transactionDate.toString().substring(0, 10)}',
-                  style: GoogleFonts.poppins(fontSize: 12)),
-            Text('Amount: \$${amount.toStringAsFixed(2)}',
-                style: GoogleFonts.poppins(
-                    fontSize: 12, fontWeight: FontWeight.bold)),
+              Text(
+                'Date: ${transactionDate.toString().substring(0, 10)}',
+                style: GoogleFonts.poppins(fontSize: 12),
+              ),
+            Text(
+              'Amount: \$${amount.toStringAsFixed(2)}',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
-        trailing: Icon(Icons.arrow_forward_ios,
-            size: 18, color: theme.colorScheme.primary),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+          color: theme.colorScheme.primary,
+        ),
         onTap: () {
           Navigator.push(
             context,
@@ -269,7 +300,7 @@ class _PaymentsTabState extends State<PaymentsTab> {
 class PaymentDetailsScreen extends StatefulWidget {
   final dynamic payment;
   const PaymentDetailsScreen({Key? key, required this.payment})
-      : super(key: key);
+    : super(key: key);
 
   @override
   State<PaymentDetailsScreen> createState() => _PaymentDetailsScreenState();
@@ -334,38 +365,12 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     });
 
     try {
-      final order = widget.payment['order'];
-      final orderId = order['order_id'];
-      final total = _parseAmount(order['total_amount']);
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final customerPhone = authProvider.userData?['phone'] ?? '';
-
-      // Validate required fields
-      if (customerPhone.isEmpty) {
-        setState(() {
-          _processError =
-              'Customer phone number is required for payment processing.';
-        });
-        return;
-      }
-
-      final result = await OrderService.processPayment(
-        orderId: orderId,
-        amount: total,
-        customerPhone: customerPhone,
-      );
-
-      if (result['success']) {
-        setState(() {
-          _processSuccess = 'Payment processed successfully!';
-        });
-        // Refresh payment details after successful processing
-        await _loadPaymentDetails();
-      } else {
-        setState(() {
-          _processError = result['message'] ?? 'Payment processing failed.';
-        });
-      }
+      // Since payments are now processed during order creation,
+      // we can't process payments separately anymore
+      setState(() {
+        _processError =
+            'Payments are processed automatically during order creation.';
+      });
     } catch (e) {
       setState(() {
         _processError = 'Payment error: $e';
@@ -381,18 +386,22 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
   Widget build(BuildContext context) {
     final payment = _paymentDetails ?? widget.payment;
     final order = payment['order'] ?? {};
-    final paymentType =
-        (payment['payment_type'] ?? 'api').toString().toLowerCase();
+    final paymentType = (payment['payment_type'] ?? 'api')
+        .toString()
+        .toLowerCase();
     final amount = _parseAmount(payment['amount']);
     final transactionDate = payment['transaction_date'];
     final orderStatus = (order['status'] ?? 'pending').toString().toLowerCase();
-    final orderPaymentStatus =
-        (order['payment_status'] ?? 'pending').toString().toLowerCase();
+    final orderPaymentStatus = (order['payment_status'] ?? 'pending')
+        .toString()
+        .toLowerCase();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment #${payment['payment_id']}',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Payment #${payment['payment_id']}',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
@@ -417,16 +426,22 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Payment Summary',
-                                  style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18)),
+                              Text(
+                                'Payment Summary',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: _getPaymentTypeColor(paymentType)
-                                      .withOpacity(0.1),
+                                  color: _getPaymentTypeColor(
+                                    paymentType,
+                                  ).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -441,78 +456,52 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                           ),
                           const SizedBox(height: 12),
                           _buildInfoRow(
-                              'Payment ID', '#${payment['payment_id']}'),
+                            'Payment ID',
+                            '#${payment['payment_id']}',
+                          ),
                           _buildInfoRow('Order ID', '#${order['order_id']}'),
                           _buildInfoRow(
-                              'Amount', '\$${amount.toStringAsFixed(2)}'),
-                          _buildInfoRow('Transaction ID',
-                              payment['transaction_id'] ?? 'N/A'),
-                          if (transactionDate != null)
-                            _buildInfoRow('Date',
-                                transactionDate.toString().substring(0, 19)),
+                            'Amount',
+                            '\$${amount.toStringAsFixed(2)}',
+                          ),
                           _buildInfoRow(
-                              'Order Status', orderStatus.toUpperCase()),
-                          _buildInfoRow('Payment Status',
-                              orderPaymentStatus.toUpperCase()),
+                            'Transaction ID',
+                            payment['transaction_id'] ?? 'N/A',
+                          ),
+                          if (transactionDate != null)
+                            _buildInfoRow(
+                              'Date',
+                              transactionDate.toString().substring(0, 19),
+                            ),
+                          _buildInfoRow(
+                            'Order Status',
+                            orderStatus.toUpperCase(),
+                          ),
+                          _buildInfoRow(
+                            'Payment Status',
+                            orderPaymentStatus.toUpperCase(),
+                          ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
 
-                  // Process Payment Button (only for pending payments)
-                  if (orderPaymentStatus == 'pending') ...[
-                    if (_processError != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red),
-                        ),
-                        child: Text(_processError!,
-                            style: GoogleFonts.poppins(color: Colors.red)),
-                      ),
-                    if (_processSuccess != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.green),
-                        ),
-                        child: Text(_processSuccess!,
-                            style: GoogleFonts.poppins(color: Colors.green)),
-                      ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _isProcessing ? null : _processPayment,
-                        icon: _isProcessing
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.white))
-                            : const Icon(Icons.payment),
-                        label: Text(
-                            _isProcessing ? 'Processing...' : 'Process Payment',
-                            style: GoogleFonts.poppins()),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
+                  // Note: Payments are now processed automatically during order creation
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue),
                     ),
-                  ],
+                    child: Text(
+                      'Payments are processed automatically when orders are created.',
+                      style: GoogleFonts.poppins(color: Colors.blue[700]),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -525,9 +514,13 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: GoogleFonts.poppins(
-                  color: Colors.grey[600], fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         ],
       ),
